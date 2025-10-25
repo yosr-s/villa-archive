@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const adminRoutes = require('./routes/admin.router');
 const visitorRoutes = require('./routes/visitor.router');
+const videoRoutes = require('./routes/video.router');
 
 
 const app = express();
@@ -19,6 +20,8 @@ mongoose.connect(process.env.MONGO_URI)
 // 🌐 Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/visitor', visitorRoutes);
+app.use('/api/videos', videoRoutes);
+
 
 
 // 🚀 Lancement serveur
