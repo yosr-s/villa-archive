@@ -180,7 +180,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     toast({
       title: "✅ Wideo przesłane",
-      description: "Nowe wideo zostało zapisane w archiwum willi.",
+      description: "Nowe wideo zostało zapisane w archiwum.",
     });
 
     // Reset form

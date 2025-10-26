@@ -20,21 +20,21 @@ const VisitorLogin = () => {
       const success = await login(email, password, 'visitor');
       if (success) {
         toast({
-          title: "Welcome!",
-          description: "Successfully logged in as visitor.",
+        title: "Witaj!",
+    description: "Zalogowano pomyślnie jako gość.",
         });
         navigate('/visitor/dashboard');
       } else {
         toast({
-          title: "Access denied",
-          description: "Invalid email or password.",
+          title: "Brak dostępu",
+    description: "Nieprawidłowy e-mail lub hasło.",
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "An error occurred during login.",
+       title: "Błąd",
+    description: "Wystąpił błąd podczas logowania.",
         variant: "destructive",
       });
     } finally {
