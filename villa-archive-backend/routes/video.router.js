@@ -11,6 +11,7 @@ router.get("/", videoController.getVideos);
 router.get("/:id", videoController.getVideoById);
 router.delete("/:id", videoController.deleteVideo);
 router.patch("/:id/toggle", videoController.toggleActive);
+router.patch("/:id", videoController.updateVideoById); // ✅ nouvelle route
 
 // 📥 Infos directes Vimeo
 router.get("/vimeo/:vimeoId", videoController.getVimeoInfo);

@@ -216,30 +216,82 @@ exports.registerVideo = async (req, res) => {
 //     res.status(500).json({ message: "Erreur serveur" });
 //   }
 // };
+
+// exports.getVideos = async (req, res) => {
+//   try {
+//     const videos = await Video.aggregate([
+//       {
+//         $addFields: {
+//           parsedDate: {
+//             $cond: [
+//               { $ne: ["$creationDate", null] },
+//               { $dateFromString: { dateString: "$creationDate" } },
+//               "$createdAt"
+//             ]
+//           }
+//         }
+//       },
+//       { $sort: { parsedDate: -1 } }
+//     ]);
+
+//     res.status(200).json(videos);
+//   } catch (error) {
+//     console.error("❌ Erreur récupération vidéos :", error);
+//     res.status(500).json({ message: "Erreur récupération vidéos" });
+//   }
+// };
 exports.getVideos = async (req, res) => {
   try {
-    const videos = await Video.aggregate([
-      {
-        $addFields: {
-          parsedDate: {
-            $cond: [
-              { $ne: ["$creationDate", null] },
-              { $dateFromString: { dateString: "$creationDate" } },
-              "$createdAt"
-            ]
-          }
-        }
-      },
-      { $sort: { parsedDate: -1 } }
-    ]);
+    const videos = await Video.find();
 
-    res.status(200).json(videos);
+    const updatedVideos = await Promise.all(
+      videos.map(async (video) => {
+        try {
+          if (!video.vimeoId) return video; // skip si pas de Vimeo ID
+
+          const response = await fetch(`https://api.vimeo.com/videos/${video.vimeoId}`, {
+            headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
+          });
+
+          if (!response.ok) {
+            console.warn(`⚠️ Vimeo ${video.vimeoId} introuvable (${response.status})`);
+            return video;
+          }
+
+          const vimeoData = await response.json();
+          const newThumb =
+            vimeoData?.pictures?.sizes?.at(-1)?.link ||
+            vimeoData?.pictures?.base_link ||
+            null;
+
+          // 🧩 Vérifie si la miniature a changé
+          if (newThumb && newThumb !== video.thumbnail) {
+            video.thumbnail = newThumb;
+            await video.save();
+            console.log(`🖼️ Thumbnail mise à jour pour ${video.title}`);
+          }
+
+          return video;
+        } catch (err) {
+          console.error(`❌ Erreur mise à jour thumbnail pour ${video.vimeoId}`, err);
+          return video; // continue quand même
+        }
+      })
+    );
+
+    // 🔽 Tri du plus récent au plus ancien
+    const sorted = updatedVideos.sort((a, b) => {
+      const dateA = new Date(a.creationDate || a.createdAt);
+      const dateB = new Date(b.creationDate || b.createdAt);
+      return dateB - dateA;
+    });
+
+    res.status(200).json(sorted);
   } catch (error) {
     console.error("❌ Erreur récupération vidéos :", error);
     res.status(500).json({ message: "Erreur récupération vidéos" });
   }
 };
-
 // 🔍 Récupérer une vidéo par ID Mongo
 exports.getVideoById = async (req, res) => {
   try {
@@ -351,3 +403,34 @@ exports.getVimeoInfo = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+// ✏️ Mettre à jour les infos d’une vidéo (titre, description, date, visibilité)
+exports.updateVideoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, creationDate, isPrivate } = req.body;
+
+    // 🧩 Vérifie l’existence
+    const video = await Video.findById(id);
+    if (!video) {
+      return res.status(404).json({ message: "Vidéo introuvable." });
+    }
+
+    // 📝 Mise à jour des champs autorisés
+    if (title !== undefined) video.title = title;
+    if (description !== undefined) video.description = description;
+    if (creationDate !== undefined) video.creationDate = creationDate;
+    if (isPrivate !== undefined) video.isPrivate = isPrivate;
+
+    await video.save();
+
+    return res.status(200).json({
+      message: "Vidéo mise à jour ✅",
+      video,
+    });
+  } catch (err) {
+    console.error("❌ Erreur update vidéo :", err);
+    res.status(500).json({ message: "Erreur serveur lors de la mise à jour." });
+  }
+};
+

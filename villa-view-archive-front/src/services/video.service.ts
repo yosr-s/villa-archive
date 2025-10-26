@@ -134,4 +134,21 @@ export const videoService = {
       throw error.response?.data || { message: "Erreur récupération Vimeo" };
     }
   },
+
+
+    // 9️⃣ ✅ Mettre à jour une vidéo par ID (titre, description, date, visibilité)
+  async updateVideoById(id: string, updates: {
+    title?: string;
+    description?: string;
+    creationDate?: string;
+    isPrivate?: boolean;
+  }) {
+    try {
+      const res = await axios.patch(`${API_BASE_URL}/videos/${id}`, updates);
+      return res.data;
+    } catch (error: any) {
+      console.error("❌ Erreur update vidéo :", error.response?.data || error.message);
+      throw error.response?.data || { message: "Erreur mise à jour vidéo" };
+    }
+  },
 };

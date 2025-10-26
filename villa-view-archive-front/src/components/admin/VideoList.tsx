@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useVideos } from "../../contexts/VideoContext";
 import { toast } from "@/hooks/use-toast";
-import { Trash2, Globe, Lock } from "lucide-react";
+import { Trash2, Globe, Lock, Pencil } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 const VideoList: React.FC = () => {
   const { videos, updateVideo, deleteVideo } = useVideos();
+
+  // 🔧 État pour le modal d’édition
+  const [editingVideo, setEditingVideo] = useState<any | null>(null);
+  const [editData, setEditData] = useState({
+    title: "",
+    description: "",
+    creationDate: "",
+    isPrivate: false,
+  });
 
   // 🔁 Gérer le changement de visibilité
   const handleToggleVisibility = async (id: string, isPrivate: boolean) => {
@@ -27,6 +36,28 @@ const VideoList: React.FC = () => {
     }
   };
 
+  // ✏️ Ouvrir le modal d’édition
+  const openEditModal = (video: any) => {
+    setEditingVideo(video);
+    setEditData({
+      title: video.title || "",
+      description: video.description || "",
+      creationDate: video.creationDate?.split("T")[0] || "",
+      isPrivate: video.isPrivate || false,
+    });
+  };
+
+  // 🔄 Enregistrer les modifications
+  const handleUpdate = async () => {
+    if (!editingVideo) return;
+    await updateVideo(editingVideo._id, editData);
+    toast({
+      title: "✅ Zaktualizowano wideo",
+      description: "Dane filmu zostały pomyślnie zapisane.",
+    });
+    setEditingVideo(null);
+  };
+
   // 🕒 Cas chargement ou vide
   if (!Array.isArray(videos)) {
     return (
@@ -46,7 +77,6 @@ const VideoList: React.FC = () => {
     );
   }
 
-  // 🧩 Rendu principal
   return (
     <div className="luxury-card p-8">
       <div className="mb-8">
@@ -58,8 +88,9 @@ const VideoList: React.FC = () => {
         </p>
       </div>
 
+      {/* 🖥️ Table desktop */}
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full hidden md:table">
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">
@@ -83,7 +114,6 @@ const VideoList: React.FC = () => {
                 key={video._id}
                 className="border-b border-gray-100 hover:bg-gray-50"
               >
-                {/* 🖼️ Miniature + titre */}
                 <td className="py-4 px-2">
                   <div className="flex items-center space-x-4">
                     <img
@@ -109,19 +139,13 @@ const VideoList: React.FC = () => {
                   </div>
                 </td>
 
-                {/* 📅 Dates */}
                 <td className="py-4 px-2 text-sm">
                   <p className="text-luxury-darkGrey">
                     <strong>Utworzono:</strong>{" "}
                     {new Date(video.creationDate).toLocaleDateString()}
                   </p>
-                  {/* <p className="text-luxury-grey mt-1">
-                    <strong>Dodano:</strong>{" "}
-                    {new Date(video.createdAt || "").toLocaleDateString()}
-                  </p> */}
                 </td>
 
-                {/* 🌍 Widoczność */}
                 <td className="py-4 px-2">
                   <div className="flex items-center space-x-3">
                     <Switch
@@ -146,8 +170,14 @@ const VideoList: React.FC = () => {
                   </div>
                 </td>
 
-                {/* 🗑️ Akcje */}
-                <td className="py-4 px-2">
+                <td className="py-4 px-2 flex space-x-3">
+                  <button
+                    onClick={() => openEditModal(video)}
+                    className="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                    title="Edytuj wideo"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={() => handleDelete(video._id, video.title)}
                     className="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors"
@@ -160,7 +190,165 @@ const VideoList: React.FC = () => {
             ))}
           </tbody>
         </table>
+
+        {/* 🟢 Version mobile (cartes) */}
+        <div className="md:hidden space-y-4">
+          {videos.map((video) => (
+            <div
+              key={video._id}
+              className="p-4 border border-gray-200 rounded-xl bg-white shadow-sm"
+            >
+              <div className="flex items-center space-x-3 mb-3">
+                <img
+                  src={
+                    video.thumbnail ||
+                    "https://via.placeholder.com/100x70?text=No+Thumbnail"
+                  }
+                  alt={video.title}
+                  className="w-24 h-16 object-cover rounded-md"
+                />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-luxury-darkGrey">
+                    {video.title}
+                  </h3>
+                  <p className="text-xs text-luxury-grey mt-1">
+                    {video.description
+                      ? video.description.length > 60
+                        ? `${video.description.substring(0, 60)}...`
+                        : video.description
+                      : "Brak opisu"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-sm text-luxury-darkGrey">
+                  <strong>Utworzono:</strong>{" "}
+                  {new Date(video.creationDate).toLocaleDateString("pl-PL")}
+                </p>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={!video.isPrivate}
+                    onCheckedChange={(checked) =>
+                      handleToggleVisibility(video._id, !checked)
+                    }
+                  />
+                  {!video.isPrivate ? (
+                    <Globe className="w-4 h-4 text-green-600" />
+                  ) : (
+                    <Lock className="w-4 h-4 text-orange-600" />
+                  )}
+                </div>
+              </div>
+
+              <div className="text-right space-x-2">
+                <button
+                  onClick={() => openEditModal(video)}
+                  className="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDelete(video._id, video.title)}
+                  className="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* 🪟 Modal édition */}
+      {editingVideo && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md space-y-4 relative">
+            <h3 className="text-xl font-semibold text-luxury-darkGrey">
+              Edytuj wideo
+            </h3>
+
+            <div>
+              <label className="block text-sm mb-1 text-gray-700">
+                Tytuł
+              </label>
+              <input
+                type="text"
+                className="luxury-input w-full"
+                value={editData.title}
+                onChange={(e) =>
+                  setEditData((prev) => ({ ...prev, title: e.target.value }))
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-1 text-gray-700">
+                Opis
+              </label>
+              <textarea
+                className="luxury-input w-full resize-none"
+                rows={3}
+                value={editData.description}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-1 text-gray-700">
+                Data utworzenia
+              </label>
+              <input
+                type="date"
+                className="luxury-input w-full"
+                value={editData.creationDate}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    creationDate: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <Switch
+                checked={!editData.isPrivate}
+                onCheckedChange={(checked) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    isPrivate: !checked,
+                  }))
+                }
+              />
+              <span className="text-sm text-gray-700">
+                {editData.isPrivate ? "Prywatne" : "Publiczne"}
+              </span>
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                onClick={() => setEditingVideo(null)}
+                className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
+              >
+                Anuluj
+              </button>
+              <button
+                onClick={handleUpdate}
+                className="px-4 py-2 rounded-md bg-luxury-darkGrey text-white hover:bg-luxury-gold transition"
+              >
+                Zapisz zmiany
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

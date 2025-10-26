@@ -46,8 +46,8 @@ export const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   /* -------------------------------------------------------------------------- */
   const addVideo = async (video: Omit<Video, "_id" | "createdAt" | "updatedAt">) => {
     try {
-      const res = await videoService.registerVideo(video); // ✅ utiliser le bon endpoint
-      const added = res.video || res; // backend renvoie { video: {...} }
+      const res = await videoService.registerVideo(video);
+      const added = res.video || res;
       setVideos((prev) => [added, ...prev]);
 
       toast({
@@ -65,20 +65,29 @@ export const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   /* -------------------------------------------------------------------------- */
-  /* 🔁 Mettre à jour la visibilité (toggle privé/publique)                     */
+  /* 🔁 Mettre à jour une vidéo (toggle ou update complet)                      */
   /* -------------------------------------------------------------------------- */
   const updateVideo = async (id: string, updates?: Partial<Video>) => {
     try {
-      const res = await videoService.toggleActive(id);
-      const updated = res.video || res;
+      let updatedVideo;
+
+      if (!updates || Object.keys(updates).length === 0 || updates.isPrivate === undefined) {
+        // 🔄 Cas toggle
+        const res = await videoService.toggleActive(id);
+        updatedVideo = res.video || res;
+      } else {
+        // ✏️ Cas update complet
+        const res = await videoService.updateVideoById(id, updates);
+        updatedVideo = res.video || res;
+      }
 
       setVideos((prev) =>
-        prev.map((v) => (v._id === id ? { ...v, ...updated } : v))
+        prev.map((v) => (v._id === id ? { ...v, ...updatedVideo } : v))
       );
 
       toast({
         title: "🔄 Zaktualizowano",
-        description: `Wideo zostało ${updated.isPrivate ? "ukryte" : "udostępnione publicznie"}.`,
+        description: "Wideo zostało zaktualizowane pomyślnie.",
       });
     } catch (err) {
       console.error("Erreur mise à jour vidéo :", err);

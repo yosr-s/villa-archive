@@ -169,7 +169,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                     <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer">
                       {video.thumbnail ? (
                         <>
-                          <img
+                          {/* <img
                             src={video.thumbnail}
                             alt={video.title}
                             className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
@@ -180,7 +180,22 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                             onClick={() => setSelectedVideo(video)}
                           >
                             <Play className="w-12 h-12 text-white" />
-                          </div>
+                          </div> */}
+                          <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video">
+  <img
+    src={video.thumbnail}
+    alt={video.title}
+    className="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-300 group-hover:scale-125"
+    onClick={() => setSelectedVideo(video)}
+  />
+  <div
+    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    onClick={() => setSelectedVideo(video)}
+  >
+    <Play className="w-12 h-12 text-white" />
+  </div>
+</div>
+
                         </>
                       ) : (
                         <iframe

@@ -58,7 +58,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
               </div>
             )}
 
-            <div className="grid md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+            {/* <div className="grid md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
               <div className="flex items-center text-luxury-grey">
                 <Calendar className="w-4 h-4 mr-2" />
                 <span className="text-sm">
@@ -82,11 +82,39 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
                   </>
                 )}
               </div>
-            </div>
+            </div> */}
+            <div className="flex justify-between items-center pt-4 border-t border-gray-200 text-luxury-grey">
+  {/* 🗓️ Date à gauche */}
+  <div className="flex items-center">
+    <Calendar className="w-4 h-4 mr-2" />
+    <span className="text-sm">
+      Utworzono:{" "}
+      {video.creationDate
+        ? new Date(video.creationDate).toLocaleDateString("pl-PL")
+        : "—"}
+    </span>
+  </div>
+
+  {/* 🌍 Statut à droite */}
+  <div className="flex items-center">
+    {video.isPrivate ? (
+      <>
+        <Lock className="w-4 h-4 mr-2 text-red-400" />
+        <span className="text-sm">Wideo prywatne</span>
+      </>
+    ) : (
+      <>
+        <Globe className="w-4 h-4 mr-2 text-green-500" />
+        <span className="text-sm">Wideo publiczne</span>
+      </>
+    )}
+  </div>
+</div>
+
           </div>
 
           {/* 🔗 Lien direct */}
-          {video.shareUrl && (
+          {/* {video.shareUrl && (
             <div className="mt-6 text-center">
               <a
                 href={video.shareUrl}
@@ -97,7 +125,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
                 Otwórz w Vimeo ↗
               </a>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
