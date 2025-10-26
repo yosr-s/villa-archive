@@ -100,7 +100,7 @@ const Homepage = () => {
         <div className="container mx-auto px-6 text-center">
           <p className="text-luxury-grey">
             {/* © 2025 Janusz Szychliński Luxury Villa Archive. All rights reserved. */}
-            © 2025 Janusz Szychliński Archiwum luksusowej Willi. Wszelkie prawa zastrzeżone.
+            © 2025 Janusz Szychliński archiwum domu. Wszelkie prawa zastrzeżone.
           </p>
         </div>
       </footer>
