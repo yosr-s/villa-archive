@@ -81,10 +81,10 @@ const VideoList: React.FC = () => {
     <div className="luxury-card p-8">
       <div className="mb-8">
         <h2 className="font-luxury text-3xl font-semibold text-luxury-darkGrey mb-2">
-          Lista archiwum wideo
+          Lista wideo
         </h2>
         <p className="text-luxury-grey">
-          Zarządzaj wszystkimi filmami w swoim archiwum luksusowej willi.
+          Zarządzaj filmami w swoim archiwum.
         </p>
       </div>
 

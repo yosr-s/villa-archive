@@ -89,7 +89,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <h1
+          {/* <h1
             className="text-black"
             style={{ fontFamily: "Archivo", fontSize: "3rem" }}
           >
@@ -99,7 +99,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
             style={{ fontFamily: "Archivo", fontSize: "1rem", color: "black" }}
           >
             Odkryj piękno i elegancję uchwycone na przestrzeni czasu.
-          </p>
+          </p> */}
         </motion.h1>
       </div>
 

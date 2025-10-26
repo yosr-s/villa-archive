@@ -72,34 +72,28 @@ const Homepage = () => {
       </div>
 
       {/* Awards Section */}
-      <div className="container mx-auto px-6 py-16">
+      {/* <div className="container mx-auto px-6 py-16">
         <div className="grid md:grid-cols-3 gap-8 mb-16 animate-fade-in-up">
           <div className="luxury-card p-8 text-center">
             <Crown className="w-12 h-12 text-luxury-grey mx-auto mb-4" />
-            {/* <h3 className="font-luxury text-xl font-semibold mb-2"> Top Architecture </h3> */}
             <h3 className="font-luxury text-xl font-semibold mb-2"> Najlepsza architektura </h3>
-            {/* <p className="text-luxury-grey">Award-winning architectural design recognized for innovation and elegance</p> */}
             <p className="text-luxury-grey">Nagrodzony projekt architektoniczny, doceniony za innowacyjność i elegancję</p>
           </div>
           
           <div className="luxury-card p-8 text-center">
             <Star className="w-12 h-12 text-luxury-grey mx-auto mb-4" />
-            {/* <h3 className="font-luxury text-xl font-semibold mb-2">Luxury Property of the Year</h3> */}
             <h3 className="font-luxury text-xl font-semibold mb-2">Luksusowa nieruchomość roku</h3>
 
-            {/* <p className="text-luxury-grey">Honored as the most prestigious residential property in Poland</p> */}
             <p className="text-luxury-grey">Uhonorowana jako najbardziej prestiżowa nieruchomość mieszkalna w Polsce</p>
           </div>
           
           <div className="luxury-card p-8 text-center">
             <Award className="w-12 h-12 text-luxury-grey mx-auto mb-4" />
-            {/* <h3 className="font-luxury text-xl font-semibold mb-2">Excellence in Design</h3> */}
             <h3 className="font-luxury text-xl font-semibold mb-2">Doskonałość w designie</h3>
-            {/* <p className="text-luxury-grey">Celebrating exceptional craftsmanship and attention to detail</p> */}
             <p className="text-luxury-grey">Świętujemy wyjątkowe rzemiosło i dbałość o detale</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Footer */}
       <footer className="border-t border-gray-200 py-8">

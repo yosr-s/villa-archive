@@ -248,7 +248,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             Dodaj nowe wideo
           </h2>
           <p className="text-luxury-grey">
-            Prześlij plik wideo — zostanie automatycznie przesłany na Vimeo i
+            Prześlij plik wideo — zostanie automatycznie przesłany na serwer i
             zapisany w bazie.
           </p>
         </div>
@@ -315,7 +315,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               htmlFor="file"
               className="block text-sm font-medium text-luxury-darkGrey mb-2"
             >
-              Wybierz plik wideo (MP4 / MOV)
+              Wybierz plik wideo 
             </label>
             <input
               id="file"

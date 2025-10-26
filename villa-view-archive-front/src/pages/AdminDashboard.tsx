@@ -72,7 +72,7 @@ const AdminDashboard = () => {
                   {/* Admin Dashboard */}Panel administracyjny
                 </h1>
                 {/* <p className="text-luxury-grey">Manage your luxury villa archive</p> */}
-                <p className="text-luxury-grey">Zarządzaj swoim archiwum luksusowej willi</p>
+                <p className="text-luxury-grey">Zarządzaj swoim archiwum</p>
               </div>
               <button
                 onClick={handleLogout}
