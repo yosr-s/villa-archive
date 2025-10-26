@@ -155,7 +155,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleCopyEmbedUrl(video.embedUrl);
+                          handleCopyEmbedUrl(video.shareUrl);
                         }}
                         className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
                         title="Kopiuj bezpośredni link Vimeo"
@@ -200,7 +200,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                       ) : (
                         <iframe
                           // src={video.embedUrl}
-                          src={`${video.embedUrl}?quality=2160p&autoplay=1&muted=0`}
+                          src={`${video.embedUrl}?autoplay=1&quality=4K`}
                           className="w-full h-48 object-cover pointer-events-none"
                           frameBorder="0"
                           allow="autoplay; fullscreen; picture-in-picture"
