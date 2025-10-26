@@ -92,7 +92,7 @@ if (success) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="luxury-input"
-                  placeholder="admin@villa.com"
+                  placeholder="admin@test.com"
                   autoComplete="username"          // <—
                   autoCapitalize="none"
                   autoCorrect="off"

@@ -58,9 +58,9 @@ const handleLogout = async () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="font-luxury text-2xl font-semibold text-luxury-darkGrey">
-                  Archiwum willi
+                  Archiwum domu
                 </h1>
-                <p className="text-luxury-grey">Przeglądaj ekskluzywną kolekcję wideo</p>
+                <p className="text-luxury-grey">Przeglądaj kolekcję wideo</p>
               </div>
               <button
                 onClick={handleLogout}

@@ -73,7 +73,7 @@ const VisitorLogin = () => {
                 {/* Visitor Access */} Dostęp dla gości
               </h1>
               <p className="text-luxury-grey">
-                {/* View the exclusive villa archive */} Zobacz ekskluzywne archiwum willi
+                {/* View the exclusive villa archive */} Zobacz archiwalne video domu
               </p>
             </div>
 
@@ -88,7 +88,7 @@ const VisitorLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="luxury-input"
-                  placeholder="azerty@villa.com"
+                  placeholder="visitor@test.com"
                   required
                 />
               </div>
