@@ -135,8 +135,8 @@ exports.registerVideo = async (req, res) => {
     // 🕓 Attente du transcodage si nécessaire
     let vimeoData = await getVimeoData();
     let attempts = 0;
-    while (vimeoData?.transcode?.status !== "complete" && attempts < 20) {
-      console.log(`⏳ En attente du transcodage... (${attempts + 1}/20)`);
+    while (vimeoData?.transcode?.status !== "complete" && attempts < 30) {
+      console.log(`⏳ En attente du transcodage... (${attempts + 1}/30)`);
       await new Promise((r) => setTimeout(r, 5000));
       vimeoData = await getVimeoData();
       attempts++;
