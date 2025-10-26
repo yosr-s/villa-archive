@@ -1,51 +1,118 @@
+import React, { useState } from "react";
+import { useVideos } from "../../contexts/VideoContext";
+import { videoService } from "../../services/video.service";
+import { toast } from "@/hooks/use-toast";
+import { Upload, Loader2 } from "lucide-react";
 
-import React, { useState } from 'react';
-import { useVideos } from '../../contexts/VideoContext';
-import { toast } from '@/hooks/use-toast';
-import { Upload } from 'lucide-react';
-
-const AddVideo = () => {
+/**
+ * 🎬 AddVideo : Upload local → Vimeo → MongoDB
+ */
+const AddVideo: React.FC = () => {
   const { addVideo } = useVideos();
+
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    creationDate: '',
-    isPublic: true,
-    thumbnailUrl: '',
-    videoUrl: ''
+    title: "",
+    description: "",
+    creationDate: "",
+    isPrivate: false,
+    file: null as File | null,
   });
+
+  const [progress, setProgress] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * 📦 Gère les changements d'input
+   */
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }));
+  };
+
+  /**
+   * 📁 Sélection du fichier local
+   */
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData((prev) => ({ ...prev, file }));
+  };
+
+  /**
+   * 🚀 Soumission du formulaire (upload → Vimeo → DB)
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.file) {
+      toast({
+        title: "❌ Brak pliku",
+        description: "Wybierz plik wideo przed przesłaniem.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
+    setProgress(0);
 
     try {
-      // In a real app, you would upload the video file here
-      addVideo({
-        ...formData,
-        thumbnailUrl: formData.thumbnailUrl || 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=400&h=300&fit=crop',
-        videoUrl: formData.videoUrl || 'https://example.com/video.mp4'
-      });
+      // Étape 1️⃣ — Demande d’une URL d’upload à Vimeo
+      const { uploadUrl, vimeoId } = await videoService.createUploadUrl(
+        formData.title,
+        formData.description,
+        formData.file.size,
+        formData.isPrivate
+      );
+
+      // toast({
+      //   title: "🔗 Utworzono połączenie Vimeo",
+      //   description: "Rozpoczynam przesyłanie filmu...",
+      // });
+
+      // Étape 2️⃣ — Upload du fichier vidéo sur Vimeo (TUS)
+      await videoService.uploadToVimeo(uploadUrl, formData.file);
+
+      // Étape 3️⃣ — Enregistrer la vidéo dans MongoDB
+      const embedUrl = `https://player.vimeo.com/video/${vimeoId}`;
+      const shareUrl = `https://vimeo.com/${vimeoId}`;
+
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        vimeoId,
+        embedUrl,
+        shareUrl,
+        isPrivate: formData.isPrivate,
+        creationDate: formData.creationDate,
+      };
+
+      await addVideo(payload);
 
       toast({
-        title: "Video added successfully",
-        description: "The video has been uploaded to the archive.",
+        title: "✅ Wideo przesłane",
+        description: "Nowe wideo zostało zapisane w archiwum willi.",
       });
 
-      // Reset form
+      // 🔄 Reset formulaire
       setFormData({
-        title: '',
-        description: '',
-        creationDate: '',
-        isPublic: true,
-        thumbnailUrl: '',
-        videoUrl: ''
+        title: "",
+        description: "",
+        creationDate: "",
+        isPrivate: false,
+        file: null,
       });
-    } catch (error) {
+      setProgress(0);
+    } catch (err) {
+      console.error("Erreur upload vidéo :", err);
       toast({
-        title: "Upload failed",
-        description: "There was an error uploading the video.",
+        title: "❌ Błąd przesyłania",
+        description: "Nie udało się przesłać wideo.",
         variant: "destructive",
       });
     } finally {
@@ -53,148 +120,165 @@ const AddVideo = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
-  };
-
   return (
-    <div className="luxury-card p-8">
-      <div className="mb-8">
-        <h2 className="font-luxury text-3xl font-semibold text-luxury-darkGrey mb-2">
-          Dodaj nowe wideo
-        </h2>
-        <p className="text-luxury-grey">
-          Prześlij nowe wideo do archiwum luksusowej willi
-        </p>
+    <>
+      {/* 🌀 Overlay loader plein écran */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50 backdrop-blur-sm">
+          <Loader2 className="w-10 h-10 text-white animate-spin mb-4" />
+          <p className="text-white text-lg font-medium mb-4">
+            Przesyłanie wideo...
+          </p>
+
+          {/* Barre de progression (centrale) */}
+          {progress > 0 && (
+            <div className="w-64 bg-gray-300 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-white h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="luxury-card p-8">
+        <div className="mb-8">
+          <h2 className="font-luxury text-3xl font-semibold text-luxury-darkGrey mb-2">
+            Dodaj nowe wideo
+          </h2>
+          <p className="text-luxury-grey">
+            Prześlij plik wideo — zostanie automatycznie przesłany na Vimeo i
+            zapisany w bazie.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-luxury-darkGrey mb-2"
+              >
+                Tytuł wideo
+              </label>
+              <input
+                id="title"
+                name="title"
+                type="text"
+                value={formData.title}
+                onChange={handleInputChange}
+                className="luxury-input"
+                placeholder="Wpisz tytuł wideo"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="creationDate"
+                className="block text-sm font-medium text-luxury-darkGrey mb-2"
+              >
+                Data utworzenia
+              </label>
+              <input
+                id="creationDate"
+                name="creationDate"
+                type="date"
+                value={formData.creationDate}
+                onChange={handleInputChange}
+                className="luxury-input"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-luxury-darkGrey mb-2"
+            >
+              Opis
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={4}
+              className="luxury-input resize-none"
+              placeholder="Opisz zawartość wideo"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="file"
+              className="block text-sm font-medium text-luxury-darkGrey mb-2"
+            >
+              Wybierz plik wideo (MP4 / MOV)
+            </label>
+            <input
+              id="file"
+              name="file"
+              type="file"
+              accept="video/*"
+              onChange={handleFileChange}
+              className="luxury-input"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="flex items-center space-x-3">
+              <span className="text-sm font-medium text-luxury-darkGrey">
+                Udostępnij publicznie (widoczne dla gości)
+              </span>
+
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!formData.isPrivate}
+                onClick={() =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    isPrivate: !prev.isPrivate,
+                  }))
+                }
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
+                  !formData.isPrivate ? "bg-luxury-darkGrey" : "bg-gray-300"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+                    !formData.isPrivate ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </label>
+          </div>
+
+          {progress > 0 && (
+            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+              <div
+                className="bg-luxury-darkGrey h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          )}
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="luxury-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            >
+              <Upload className="w-4 h-4" />
+              <span>{isLoading ? "Przesyłanie..." : "Prześlij wideo"}</span>
+            </button>
+          </div>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-              Tytuł wideo
-            </label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              value={formData.title}
-              onChange={handleInputChange}
-              className="luxury-input"
-              placeholder="Wpisz tytuł wideo"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="creationDate" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-              Data utworzenia
-            </label>
-            <input
-              id="creationDate"
-              name="creationDate"
-              type="date"
-              value={formData.creationDate}
-              onChange={handleInputChange}
-              className="luxury-input"
-              required
-            />
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-            Opis
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            rows={4}
-            className="luxury-input resize-none"
-            placeholder="Opisz zawartość wideo"
-            required
-          />
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="thumbnailUrl" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-              Adres URL miniatury 
-            </label>
-            <input
-              id="thumbnailUrl"
-              name="thumbnailUrl"
-              type="url"
-              value={formData.thumbnailUrl}
-              onChange={handleInputChange}
-              className="luxury-input"
-              placeholder="https://example.com/thumbnail.jpg"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="videoUrl" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-              Adres URL wideo 
-            </label>
-            <input
-              id="videoUrl"
-              name="videoUrl"
-              type="url"
-              value={formData.videoUrl}
-              onChange={handleInputChange}
-              className="luxury-input"
-              placeholder="https://example.com/video.mp4"
-            />
-          </div>
-        </div>
-
-     <div>
-  <label className="flex items-center space-x-3">
-    <span className="text-sm font-medium text-luxury-darkGrey">
-      Udostępnij to wideo publicznie (widoczne dla gości)
-    </span>
-
-    <button
-      type="button"
-      role="switch"
-      aria-checked={formData.isPublic}
-      onClick={() =>
-        handleInputChange({
-          target: { name: 'isPublic', value: !formData.isPublic },
-        } as any)
-      }
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 ${
-        formData.isPublic ? 'bg-luxury-darkGrey' : 'bg-gray-300'
-      }`}
-    >
-      <span
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-          formData.isPublic ? 'translate-x-6' : 'translate-x-1'
-        }`}
-      />
-    </button>
-  </label>
-</div>
-
-
-        <div className="pt-4">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="luxury-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-          >
-            <Upload className="w-4 h-4" />
-            <span>{isLoading ? 'Przesyłanie...' : 'Prześlij wideo'}</span>
-          </button>
-        </div>
-      </form>
-    </div>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { LogOut } from 'lucide-react';
 import ExploreArchive from '../components/ExploreArchive';
+import { toast } from "@/hooks/use-toast";
 
 const VisitorDashboard = () => {
   const { user, logout } = useAuth();
@@ -18,22 +19,36 @@ const VisitorDashboard = () => {
     return null;
   }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+const handleLogout = async () => {
+  await logout();
+  toast({
+    title: "👋 Wylogowano",
+    description: "Zostałeś pomyślnie wylogowany z konta gościa.",
+  });
+  navigate("/");
+};
+
 
   return (
     <div className="relative min-h-screen">
       {/* 🌄 Background image with its own opacity */}
-      <div
+      {/* <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/lovable-uploads/02001situation.jpg')",
           opacity: 0.2, // 👈 only the background fades
         }}
         aria-hidden="true"
-      />
+      /> */}
+      <div
+  className="absolute inset-0 bg-gray-200" // couleur gris clair Tailwind
+  style={{
+    backgroundColor: "#f2f2f2", // optionnel : couleur personnalisée
+    opacity: 1, // pas de transparence
+  }}
+  aria-hidden="true"
+/>
+
 
       {/* Foreground content */}
       <div className="relative z-10">

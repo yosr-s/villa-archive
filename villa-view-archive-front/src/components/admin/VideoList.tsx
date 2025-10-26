@@ -1,117 +1,157 @@
-import React from 'react';
-import { useVideos } from '../../contexts/VideoContext';
-import { toast } from '@/hooks/use-toast';
-import { Trash2, Eye, EyeOff } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
+import React from "react";
+import { useVideos } from "../../contexts/VideoContext";
+import { toast } from "@/hooks/use-toast";
+import { Trash2, Globe, Lock } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
-const VideoList = () => {
+const VideoList: React.FC = () => {
   const { videos, updateVideo, deleteVideo } = useVideos();
 
-  const handleToggleVisibility = (id: string, isPublic: boolean) => {
-    updateVideo(id, { isPublic });
+  // 🔁 Gérer le changement de visibilité
+  const handleToggleVisibility = async (id: string, isPrivate: boolean) => {
+    await updateVideo(id, { isPrivate });
     toast({
-      title: 'Visibility updated',
-      description: `Video is now ${isPublic ? 'public' : 'private'}`,
+      title: "Zaktualizowano widoczność",
+      description: `Wideo jest teraz ${isPrivate ? "prywatne" : "publiczne"}.`,
     });
   };
 
-  const handleDelete = (id: string, title: string) => {
-    if (window.confirm(`Are you sure you want to delete "${title}"?`)) {
-      deleteVideo(id);
+  // 🗑️ Suppression avec confirmation
+  const handleDelete = async (id: string, title: string) => {
+    if (window.confirm(`Czy na pewno chcesz usunąć „${title}”?`)) {
+      await deleteVideo(id);
       toast({
-        title: 'Video deleted',
-        description: 'The video has been removed from the archive.',
+        title: "Wideo usunięte",
+        description: "Film został usunięty z archiwum.",
       });
     }
   };
 
-  const renderContent = () => {
-    if (!Array.isArray(videos)) {
-      return (
-        <div className="text-center py-12">
-          <p className="text-luxury-grey text-lg">Loading videos...</p>
-        </div>
-      );
-    }
-
-    if (videos.length === 0) {
-      return (
-        <div className="text-center py-12">
-          <p className="text-luxury-grey text-lg">Nie przesłano jeszcze żadnych wideo.</p>
-        </div>
-      );
-    }
-
+  // 🕒 Cas chargement ou vide
+  if (!Array.isArray(videos)) {
     return (
+      <div className="text-center py-12">
+        <p className="text-luxury-grey text-lg">Ładowanie wideo...</p>
+      </div>
+    );
+  }
+
+  if (videos.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-luxury-grey text-lg">
+          Nie przesłano jeszcze żadnych wideo.
+        </p>
+      </div>
+    );
+  }
+
+  // 🧩 Rendu principal
+  return (
+    <div className="luxury-card p-8">
+      <div className="mb-8">
+        <h2 className="font-luxury text-3xl font-semibold text-luxury-darkGrey mb-2">
+          Lista archiwum wideo
+        </h2>
+        <p className="text-luxury-grey">
+          Zarządzaj wszystkimi filmami w swoim archiwum luksusowej willi.
+        </p>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200">
-              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">Wideo</th>
-              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">Szczegóły</th>
-              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">Widoczność</th>
-              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">Akcje</th>
+              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">
+                Podgląd
+              </th>
+              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">
+                Szczegóły
+              </th>
+              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">
+                Widoczność
+              </th>
+              <th className="text-left py-4 px-2 font-medium text-luxury-darkGrey">
+                Akcje
+              </th>
             </tr>
           </thead>
+
           <tbody>
             {videos.map((video) => (
-              <tr key={video.id} className="border-b border-gray-100 hover:bg-gray-50">
+              <tr
+                key={video._id}
+                className="border-b border-gray-100 hover:bg-gray-50"
+              >
+                {/* 🖼️ Miniature + titre */}
                 <td className="py-4 px-2">
                   <div className="flex items-center space-x-4">
                     <img
-                      src={video.thumbnailUrl}
+                      src={
+                        video.thumbnail ||
+                        "https://via.placeholder.com/120x80?text=No+Thumbnail"
+                      }
                       alt={video.title}
                       className="w-20 h-16 object-cover rounded-lg"
                     />
                     <div>
-                      <h3 className="font-semibold text-luxury-darkGrey">{video.title}</h3>
+                      <h3 className="font-semibold text-luxury-darkGrey">
+                        {video.title}
+                      </h3>
                       <p className="text-sm text-luxury-grey mt-1">
                         {video.description
-                          ? video.description.length > 50
-                            ? `${video.description.substring(0, 50)}...`
+                          ? video.description.length > 60
+                            ? `${video.description.substring(0, 60)}...`
                             : video.description
-                          : "No description"}
+                          : "Brak opisu"}
                       </p>
-
                     </div>
                   </div>
                 </td>
+
+                {/* 📅 Dates */}
                 <td className="py-4 px-2 text-sm">
                   <p className="text-luxury-darkGrey">
-                    <strong>Utworzono:</strong> {video.creationDate}
+                    <strong>Utworzono:</strong>{" "}
+                    {new Date(video.creationDate).toLocaleDateString()}
                   </p>
-                  <p className="text-luxury-grey mt-1">
-                    <strong>Przesłano:</strong> {video.uploadDate}
-                  </p>
+                  {/* <p className="text-luxury-grey mt-1">
+                    <strong>Dodano:</strong>{" "}
+                    {new Date(video.createdAt || "").toLocaleDateString()}
+                  </p> */}
                 </td>
+
+                {/* 🌍 Widoczność */}
                 <td className="py-4 px-2">
                   <div className="flex items-center space-x-3">
                     <Switch
-                      checked={video.isPublic}
+                      checked={!video.isPrivate}
                       onCheckedChange={(checked) =>
-                        handleToggleVisibility(video.id, checked)
+                        handleToggleVisibility(video._id, !checked)
                       }
                     />
                     <span className="flex items-center space-x-1 text-sm">
-                      {video.isPublic ? (
+                      {!video.isPrivate ? (
                         <>
-                          <Eye className="w-4 h-4 text-green-600" />
+                          <Globe className="w-4 h-4 text-green-600" />
                           <span className="text-green-600">Publiczne</span>
                         </>
                       ) : (
                         <>
-                          <EyeOff className="w-4 h-4 text-orange-600" />
+                          <Lock className="w-4 h-4 text-orange-600" />
                           <span className="text-orange-600">Prywatne</span>
                         </>
                       )}
                     </span>
                   </div>
                 </td>
+
+                {/* 🗑️ Akcje */}
                 <td className="py-4 px-2">
                   <button
-                    onClick={() => handleDelete(video.id, video.title)}
+                    onClick={() => handleDelete(video._id, video.title)}
                     className="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                    title="Delete video"
+                    title="Usuń wideo"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -121,20 +161,6 @@ const VideoList = () => {
           </tbody>
         </table>
       </div>
-    );
-  };
-
-  return (
-    <div className="luxury-card p-8">
-      <div className="mb-8">
-        <h2 className="font-luxury text-3xl font-semibold text-luxury-darkGrey mb-2">
-          Lista archiwum wideo
-        </h2>
-        <p className="text-luxury-grey">
-          Zarządzaj wszystkimi filmami w swoim archiwum luksusowej willi
-        </p>
-      </div>
-      {renderContent()}
     </div>
   );
 };

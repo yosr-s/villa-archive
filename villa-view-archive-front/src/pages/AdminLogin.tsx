@@ -1,14 +1,14 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
+import { ArrowLeft } from "lucide-react";
 
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { toast } from '@/hooks/use-toast';
-import { ArrowLeft } from 'lucide-react';
-
-const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const AdminLogin: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -17,36 +17,36 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(email, password, 'admin');
-      if (success) {
-        toast({
-          title: "Welcome back!",
-          description: "Successfully logged in as admin.",
-        });
-        navigate('/admin/dashboard');
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid email or password.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred during login.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+      const success = await login(email, password, "admin");
+if (success) {
+  toast({
+    title: "✅ Witamy ponownie!",
+    description: "Zalogowano pomyślnie jako administrator.",
+  });
+  navigate("/admin/dashboard");
+} else {
+  toast({
+    title: "❌ Logowanie nieudane",
+    description: "Nieprawidłowy adres e-mail lub hasło.",
+    variant: "destructive",
+  });
+}
+} catch (error) {
+  toast({
+    title: "Błąd",
+    description: "Wystąpił problem podczas logowania.",
+    variant: "destructive",
+  });
+} finally {
+  setIsLoading(false);
+}
   };
 
   return (
     <div className="min-h-screen relative">
-      {/* Background Image */}
+      {/* 🏞️ Image de fond */}
       <div className="absolute inset-0">
-        <img 
+        <img
           src="/lovable-uploads/29c7e0c1-ad55-4119-b61c-a1f1420b7d5a.png"
           alt="Luxury Villa"
           className="w-full h-full object-cover"
@@ -54,48 +54,60 @@ const AdminLogin = () => {
         <div className="absolute inset-0 bg-black/60"></div>
       </div>
 
-      {/* Content */}
+      {/* 📦 Contenu */}
       <div className="relative z-10 flex items-center justify-center px-6 min-h-screen">
         <div className="w-full max-w-md">
-          {/* Back Button */}
-          <Link 
-            to="/" 
+          {/* 🔙 Bouton retour */}
+          <Link
+            to="/"
             className="flex items-center text-white/80 hover:text-white mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            {/* Back to Home */}Powrót do strony głównej
+            Powrót do strony głównej
           </Link>
 
-          {/* Login Form */}
+          {/* 🔐 Formulaire de connexion */}
           <div className="bg-white/95 backdrop-blur-sm luxury-shadow rounded-lg p-8">
             <div className="text-center mb-8">
               <h1 className="font-luxury text-3xl font-semibold text-luxury-darkGrey mb-2">
-                {/* Admin Portal */}Portal administratora
+                Portal administratora
               </h1>
               <p className="text-luxury-grey">
-                {/* Access the administrative dashboard */}Uzyskaj dostęp do panelu administracyjnego
+                Uzyskaj dostęp do panelu administracyjnego
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-                  {/* Email Address */}Adres poczty elektronicznej
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-luxury-darkGrey mb-2"
+                >
+                  Adres poczty elektronicznej
                 </label>
-                <input
+                  <input
                   id="email"
                   type="email"
+                  inputMode="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="luxury-input"
-                  placeholder="azerty@villa.com"
+                  placeholder="admin@villa.com"
+                  autoComplete="username"          // <—
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  name="admin_login_email"         // <— évite 'email'
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-luxury-darkGrey mb-2">
-                  {/* Password */}Hasło
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-luxury-darkGrey mb-2"
+                >
+                  Hasło
                 </label>
                 <input
                   id="password"
@@ -103,8 +115,8 @@ const AdminLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="luxury-input"
-                  // placeholder="Enter your password"
                   placeholder="Wprowadź swoje hasło"
+                  autoComplete="off"
                   required
                 />
               </div>
@@ -114,15 +126,9 @@ const AdminLogin = () => {
                 disabled={isLoading}
                 className="w-full luxury-button disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {/* {isLoading ? 'Signing in...' : 'Login'} */}
-                {isLoading ? 'Logowanie...' : 'Logowanie'}
-
+                {isLoading ? "Logowanie..." : "Zaloguj się"}
               </button>
             </form>
-
-            {/* <div className="mt-6 text-center text-sm text-luxury-grey">
-              Demo credentials: admin@villa.com / admin123
-            </div> */}
           </div>
         </div>
       </div>

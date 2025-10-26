@@ -1,26 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const {
-  createVideo,
-  getVideos,
-  getVideoById,
-  deleteVideo,
-  toggleActive,
-  createUploadUrl,
-  uploadFromUrl,
-  getStreamInfo
-} = require('../controllers/video.controller');
+const videoController = require("../controllers/video.controller");
 
-// CRUD
-router.post('/', createVideo);
-router.get('/', getVideos);
-router.get('/:id', getVideoById);
-router.delete('/:id', deleteVideo);
-router.patch('/:id/toggle-active', toggleActive);
+// 🟣 Upload Vimeo complet
+router.post("/upload-url", videoController.createUploadUrl);  // Étape 1
+router.post("/register", videoController.registerVideo);      // Étape 2
 
-// Cloudflare Stream
-router.post('/cloudflare/upload-url', createUploadUrl);
-router.post('/cloudflare/upload-from-url', uploadFromUrl);
-router.get('/cloudflare/:uid', getStreamInfo);
+// 🟢 CRUD
+router.get("/", videoController.getVideos);
+router.get("/:id", videoController.getVideoById);
+router.delete("/:id", videoController.deleteVideo);
+router.patch("/:id/toggle", videoController.toggleActive);
+
+// 📥 Infos directes Vimeo
+router.get("/vimeo/:vimeoId", videoController.getVimeoInfo);
 
 module.exports = router;

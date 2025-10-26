@@ -5,6 +5,8 @@ import { LogOut, Upload, List, Clock } from 'lucide-react';
 import AddVideo from '../components/admin/AddVideo';
 import VideoList from '../components/admin/VideoList';
 import ExploreArchive from '../components/ExploreArchive';
+import { toast } from "@/hooks/use-toast"; // ✅ importe bien ton hook
+
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -19,10 +21,15 @@ const AdminDashboard = () => {
 
   if (!user || user.role !== 'admin') return null;
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const handleLogout = async () => {
+  await logout();
+  toast({
+    title: "👋 Wylogowano",
+    description: "Zostałeś pomyślnie wylogowany z panelu administratora.",
+  });
+  navigate("/");
+};
+
 
   const navigation = [
     { name: 'Dodaj wideo', href: '/admin/dashboard/add-video', icon: Upload },
@@ -36,14 +43,23 @@ const AdminDashboard = () => {
   return (
     <div className="relative min-h-screen">
       {/* Background image with its own opacity */}
-      <div
+      {/* <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/lovable-uploads/02001situation.jpg')",
           opacity: 0.2, // 👈 only the background fades
         }}
         aria-hidden="true"
-      />
+      /> */}
+      <div
+  className="absolute inset-0 bg-gray-200" // couleur gris clair Tailwind
+  style={{
+    backgroundColor: "#f2f2f2", // optionnel : couleur personnalisée
+    opacity: 1, // pas de transparence
+  }}
+  aria-hidden="true"
+/>
+
 
       {/* Page content */}
       <div className="relative z-10">

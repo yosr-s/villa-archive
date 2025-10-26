@@ -1,11 +1,13 @@
-
 export interface Video {
-  id: string;
+  _id?: string;
   title: string;
-  description: string;
-  creationDate: string;
-  isPublic: boolean;
-  thumbnailUrl: string;
-  videoUrl: string;
-  uploadDate: string;
+  description?: string;
+  thumbnail?: string;
+  embedUrl: string;      // 🔹 URL pour l’iframe
+  shareUrl?: string;     // 🔹 URL publique pour le partage
+  vimeoId: string;       // 🔹 ID vidéo Vimeo
+  creationDate?: string; // optionnelle
+  isPrivate?: boolean;   // true = cachée pour visiteurs
+  createdAt?: string;
+  updatedAt?: string;
 }

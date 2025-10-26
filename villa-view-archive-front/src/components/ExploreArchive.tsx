@@ -1,77 +1,80 @@
 import React, { useState, useRef } from "react";
 import { useVideos } from "../contexts/VideoContext";
-// import { Play, Calendar } from "lucide-react";
 import VideoModal from "./VideoModal";
 import { motion } from "framer-motion";
-// import { Trash2, Eye, EyeOff } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
-import { toast } from '@/hooks/use-toast';
-import { Play, Calendar, Trash2, Eye, EyeOff, Copy, Link as LinkIcon } from "lucide-react";
-
+import {
+  Play,
+  Calendar,
+  Trash2,
+  Lock,
+  Globe,
+  Copy,
+  Link as LinkIcon,
+} from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "@/hooks/use-toast";
 
 interface ExploreArchiveProps {
   isAdmin: boolean;
 }
 
 const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
-  //const { videos, getPublicVideos } = useVideos();
+  const { videos, getPublicVideos, updateVideo, deleteVideo } = useVideos();
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-const { videos, getPublicVideos, updateVideo } = useVideos();
- 
-
-   const handleToggleVisibility = (id: string, isPublic: boolean) => {
-    updateVideo(id, { isPublic });
+  /** 🔁 Inversion de logique car backend = isPrivate */
+  const handleToggleVisibility = (id: string, isPrivate: boolean) => {
+    updateVideo(id, { isPrivate });
     toast({
-      title: 'Visibility updated',
-      description: `Video is now ${isPublic ? 'public' : 'private'}`,
+      title: "Zaktualizowano widoczność",
+      description: `Wideo jest teraz ${isPrivate ? "prywatne" : "publiczne"}.`,
     });
   };
 
+  /** 🎞️ Admin voit tout, użytkownik tylko publiczne */
   const displayVideos = isAdmin ? videos : getPublicVideos();
   const sortedVideos = [...displayVideos].sort(
     (a, b) =>
       new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
   );
 
-  // Build a shareable page link like https://your-site.com/archive?video=123
-const buildShareLink = (id: string) =>
-  `${window.location.origin}/archive?video=${encodeURIComponent(id)}`;
+  /** 🔗 Lien partage */
+  const buildShareLink = (id: string) =>
+    `${window.location.origin}/archive?video=${encodeURIComponent(id)}`;
 
-// Robust clipboard copy with fallback
-const copyToClipboard = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    toast({ title: "Link skopiowany ✅", description: text });
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.left = "-9999px";
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
-    toast({ title: "Link skopiowany ✅", description: text });
-  }
-};
+  /** 📋 Copie lien */
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({ title: "Link skopiowany ✅", description: text });
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      toast({ title: "Link skopiowany ✅", description: text });
+    }
+  };
 
-// Click handlers
-const handleCopyShareLink = (id: string) => copyToClipboard(buildShareLink(id));
-const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
+  const handleCopyShareLink = (id: string) => copyToClipboard(buildShareLink(id));
+  const handleCopyEmbedUrl = (url: string) => copyToClipboard(url);
 
-
+  /** 🟠 Aucun wideo */
   if (sortedVideos.length === 0) {
     return (
       <div className="luxury-card p-12 text-center">
         <h2 className="font-luxury text-2xl font-semibold text-luxury-darkGrey mb-4">
-          No Videos Available
+          Brak wideo
         </h2>
         <p className="text-luxury-grey">
           {isAdmin
-            ? "Upload your first video to start building the archive."
-            : "No public videos are currently available."}
+            ? "Dodaj swoje pierwsze wideo, aby rozpocząć archiwum."
+            : "Brak dostępnych publicznych nagrań wideo."}
         </p>
       </div>
     );
@@ -79,7 +82,7 @@ const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
 
   return (
     <div className="relative">
-      {/* Title */}
+      {/* 🏷️ Titre */}
       <div className="mb-12 text-center">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -100,12 +103,9 @@ const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
         </motion.h1>
       </div>
 
-      {/* Timeline container */}
-      <div
-        ref={contentRef}
-        className="relative max-w-6xl mx-auto px-4 md:px-0"
-      >
-        {/* Central line only on desktop */}
+      {/* 📜 Timeline */}
+      <div ref={contentRef} className="relative max-w-6xl mx-auto px-4 md:px-0">
+        {/* Ligne centrale */}
         <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-1 bg-luxury-silver h-full z-0" />
 
         {/* Items */}
@@ -116,21 +116,21 @@ const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
 
             return (
               <div
-                key={video.id}
+                key={video._id}
                 className={`relative flex w-full 
                   ${isLeft ? "md:justify-start" : "md:justify-end"} 
                   md:items-center`}
               >
-                {/* Dot (only desktop) */}
+                {/* Point timeline */}
                 <div className="hidden md:block absolute left-1/2 -translate-x-1/2 z-10">
                   <div className="w-5 h-5 bg-luxury-silver rounded-full border-4 border-white luxury-shadow"></div>
                 </div>
 
-                {/* Date next to dot (desktop only) */}
+                {/* Date */}
                 <div
                   className={`absolute top-1/2 -translate-y-1/2 z-20 hidden md:block
-                    ${isLeft ? "right-[calc(50%+0.8rem)]" : "left-[calc(50%+0.7rem)]"}
-                  `}
+                    ${isLeft ? "right-[calc(50%+0.7rem)]" : "left-[calc(50%+0.9rem)]"}`
+                  }
                 >
                   <div className="flex items-center bg-luxury-silver text-luxury-darkGrey px-3 py-1 rounded-full text-sm font-medium luxury-shadow whitespace-nowrap">
                     <Calendar className="w-3 h-3 mr-1" />
@@ -138,60 +138,64 @@ const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
                   </div>
                 </div>
 
-                {/* Card */}
+                {/* 🧩 Card */}
                 <div
                   className={`w-full md:w-5/12 ${
-                    isLeft ? "md:pr-8" : "md:pl-8"
+                    isLeft ? "md:pr-10" : "md:pl-8"
                   }`}
                 >
-                  <div className="luxury-card p-6 group cursor-pointer hover:scale-105 transition-transform duration-300 relative">
-
-                {/* COPY CONTROLS */}
-  <div className="absolute top-3 right-3 flex items-center gap-2 
-                  opacity-100 md:opacity-0 md:group-hover:opacity-100
-                  transition-opacity duration-200 z-20">
-    {/* Copy shareable page link */}
-    {/* <button
-      type="button"
-      onClick={(e) => { e.stopPropagation(); handleCopyShareLink(video.id); }}
-      className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
-      title="Kopiuj link do strony"
-    >
-      <LinkIcon className="w-3.5 h-3.5" />
-      Kopiuj stronę
-    </button> */}
-
-    {/* Copy raw video URL */}
-    <button
-      type="button"
-      onClick={(e) => { e.stopPropagation(); handleCopyRawUrl(video.videoUrl); }}
-      className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
-      title="Kopiuj bezpośredni link do pliku"
-    >
-      <Copy className="w-3.5 h-3.5" />
-      Kopiuj Link
-    </button>
-  </div>    
-                    <div className="relative mb-4 overflow-hidden rounded-lg">
-                      <video
-                        src={`${video.videoUrl}#t=0.1`}
-                        muted
-                        autoPlay
-                        loop
-                        playsInline
-                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                        preload="metadata"
-                        poster={video.thumbnailUrl}
-                      />
-                      <div
-                        className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        onClick={() => setSelectedVideo(video)}
+                  <div className="luxury-card p-6 group hover:scale-105 transition-transform duration-300 relative cursor-pointer">
+                    {/* 🧷 Copy boutons */}
+                    <div
+                      className="absolute top-3 right-3 flex items-center gap-2 
+                    opacity-100 md:opacity-0 md:group-hover:opacity-100
+                    transition-opacity duration-200 z-20"
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopyEmbedUrl(video.embedUrl);
+                        }}
+                        className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
+                        title="Kopiuj bezpośredni link Vimeo"
                       >
-                        <Play className="w-12 h-12 text-white" />
-                      </div>
+                        <Copy className="w-3.5 h-3.5" />
+                        Kopiuj Link
+                      </button>
                     </div>
 
-                    {/* Date inside card (mobile only, centered bottom) */}
+                    {/* Miniatura */}
+                    <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer">
+                      {video.thumbnail ? (
+                        <>
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
+                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                            onClick={() => setSelectedVideo(video)}
+                          />
+                          <div
+                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            onClick={() => setSelectedVideo(video)}
+                          >
+                            <Play className="w-12 h-12 text-white" />
+                          </div>
+                        </>
+                      ) : (
+                        <iframe
+                          // src={video.embedUrl}
+                          src={`${video.embedUrl}?quality=2160p&autoplay=1&muted=0`}
+                          className="w-full h-48 object-cover pointer-events-none"
+                          frameBorder="0"
+                          allow="autoplay; fullscreen; picture-in-picture"
+                          allowFullScreen
+                          title={video.title}
+                        />
+                      )}
+                    </div>
+
+                    {/* 🕓 Date mobile */}
                     <div className="flex justify-center mt-2 md:hidden">
                       <div className="flex items-center bg-luxury-silver text-luxury-darkGrey px-3 py-1 rounded-full text-xs font-medium luxury-shadow">
                         <Calendar className="w-3 h-3 mr-1" />
@@ -204,34 +208,38 @@ const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
                         {video.title}
                       </h3>
                     </div>
-{isAdmin && (
-  <div className="py-4 px-2">
-    <div className="flex items-center justify-between w-full">
-      <span className="flex items-center space-x-1 text-sm">
-        {video.isPublic ? (
-          <>
-            <Eye className="w-4 h-4 text-green-600" />
-            <span className="text-green-600">Publiczne</span>
-          </>
-        ) : (
-          <>
-            <EyeOff className="w-4 h-4 text-orange-600" />
-            <span className="text-orange-600">Prywatne</span>
-          </>
-        )}
-      </span>
 
-      <Switch
-        checked={video.isPublic}
-        onCheckedChange={(checked) =>
-          handleToggleVisibility(video.id, checked)
-        }
-      />
-    </div>
-  </div>
-)}
+                    {/* 🧭 Visibilité admin */}
+                    {isAdmin && (
+                      <div className="py-4 px-2">
+                        <div className="flex items-center justify-between w-full">
+                          <span className="flex items-center space-x-1 text-sm">
+                            {video.isPrivate ? (
+                              <>
+                                <Lock className="w-4 h-4 text-orange-600" />
+                                <span className="text-orange-600">
+                                  Prywatne
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <Globe className="w-4 h-4 text-green-600" />
+                                <span className="text-green-600">
+                                  Publiczne
+                                </span>
+                              </>
+                            )}
+                          </span>
 
-
+                          <Switch
+                            checked={!video.isPrivate}
+                            onCheckedChange={(checked) =>
+                              handleToggleVisibility(video._id, !checked)
+                            }
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -240,7 +248,7 @@ const handleCopyRawUrl   = (url: string) => copyToClipboard(url);
         </div>
       </div>
 
-      {/* Modal */}
+      {/* 🎬 Modal */}
       {selectedVideo && (
         <VideoModal
           video={selectedVideo}
