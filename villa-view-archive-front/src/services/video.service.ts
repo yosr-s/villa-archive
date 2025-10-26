@@ -33,22 +33,47 @@ export const videoService = {
    * @param uploadUrl URL d’upload reçue depuis Vimeo
    * @param file Fichier vidéo local
    */
-  async uploadToVimeo(uploadUrl: string, file: File) {
-    try {
-      const res = await axios.patch(uploadUrl, file, {
-        headers: {
-          "Tus-Resumable": "1.0.0",
-          "Upload-Offset": "0",
-          "Content-Type": "application/offset+octet-stream",
-        },
-      });
-      return res;
-    } catch (error: any) {
-      console.error("❌ Erreur upload Vimeo :", error.response?.data || error.message);
-      throw error.response?.data || { message: "Erreur upload Vimeo" };
-    }
-  },
+//   async uploadToVimeo(uploadUrl: string, file: File) {
+//     try {
+//       const res = await axios.patch(uploadUrl, file, {
+//         headers: {
+//           "Tus-Resumable": "1.0.0",
+//           "Upload-Offset": "0",
+//           "Content-Type": "application/offset+octet-stream",
+//         },
+//       });
+//       return res;
+//     } catch (error: any) {
+//       console.error("❌ Erreur upload Vimeo :", error.response?.data || error.message);
+//       throw error.response?.data || { message: "Erreur upload Vimeo" };
+//     }
+//   },
 
+
+ uploadToVimeo: async (uploadUrl: string, file: File, onProgress?: (p: number) => void) => {
+    const xhr = new XMLHttpRequest();
+    return new Promise((resolve, reject) => {
+      xhr.open("PATCH", uploadUrl, true);
+      xhr.setRequestHeader("Tus-Resumable", "1.0.0");
+      xhr.setRequestHeader("Upload-Offset", "0");
+      xhr.setRequestHeader("Content-Type", "application/offset+octet-stream");
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          onProgress(percent);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
+        else reject(xhr.statusText);
+      };
+
+      xhr.onerror = () => reject(xhr.statusText);
+      xhr.send(file);
+    });
+  },
   /**
    * 3️⃣ Enregistrer les métadonnées de la vidéo dans MongoDB
    * @param videoData { title, description, thumbnail, vimeoId, creationDate, isPrivate }

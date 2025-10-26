@@ -46,91 +46,174 @@ const AddVideo: React.FC = () => {
   /**
    * 🚀 Soumission du formulaire (upload → Vimeo → DB)
    */
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
 
-    if (!formData.file) {
-      toast({
-        title: "❌ Brak pliku",
-        description: "Wybierz plik wideo przed przesłaniem.",
-        variant: "destructive",
-      });
-      return;
+//     if (!formData.file) {
+//       toast({
+//         title: "❌ Brak pliku",
+//         description: "Wybierz plik wideo przed przesłaniem.",
+//         variant: "destructive",
+//       });
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     setProgress(0);
+
+//     try {
+//       // Étape 1️⃣ — Demande d’une URL d’upload à Vimeo
+//       const { uploadUrl, vimeoId } = await videoService.createUploadUrl(
+//         formData.title,
+//         formData.description,
+//         formData.file.size,
+//         formData.isPrivate
+//       );
+
+//       // toast({
+//       //   title: "🔗 Utworzono połączenie Vimeo",
+//       //   description: "Rozpoczynam przesyłanie filmu...",
+//       // });
+
+//       // Étape 2️⃣ — Upload du fichier vidéo sur Vimeo (TUS)
+//       //!await videoService.uploadToVimeo(uploadUrl, formData.file);
+//       await videoService.uploadToVimeo(uploadUrl, formData.file, (p) => {
+//   setProgress(p);
+// });
+
+
+//       // Étape 3️⃣ — Enregistrer la vidéo dans MongoDB
+//       const embedUrl = `https://player.vimeo.com/video/${vimeoId}`;
+//       const shareUrl = `https://vimeo.com/${vimeoId}`;
+
+//       const payload = {
+//         title: formData.title,
+//         description: formData.description,
+//         vimeoId,
+//         embedUrl,
+//         shareUrl,
+//         isPrivate: formData.isPrivate,
+//         creationDate: formData.creationDate,
+//       };
+
+//       await addVideo(payload);
+
+//       toast({
+//         title: "✅ Wideo przesłane",
+//         description: "Nowe wideo zostało zapisane w archiwum willi.",
+//       });
+
+//       // 🔄 Reset formulaire
+//       setFormData({
+//         title: "",
+//         description: "",
+//         creationDate: "",
+//         isPrivate: false,
+//         file: null,
+//       });
+//       setProgress(0);
+//     } catch (err) {
+//       console.error("Erreur upload vidéo :", err);
+//       toast({
+//         title: "❌ Błąd przesyłania",
+//         description: "Nie udało się przesłać wideo.",
+//         variant: "destructive",
+//       });
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!formData.file) {
+    toast({
+      title: "❌ Brak pliku",
+      description: "Wybierz plik wideo przed przesłaniem.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setIsLoading(true);
+  setProgress(0);
+
+  try {
+    // 1️⃣ — Crée une URL d’upload Vimeo
+    const { uploadUrl, vimeoId } = await videoService.createUploadUrl(
+      formData.title,
+      formData.description,
+      formData.file.size,
+      formData.isPrivate
+    );
+
+    // 2️⃣ — Upload du fichier avec callback de progression
+    await videoService.uploadToVimeo(uploadUrl, formData.file, (p) => {
+      // Limite la progression à 80 % max pendant l'upload
+      const percent = Math.min(Math.round(p * 0.8), 80);
+      setProgress(percent);
+    });
+
+    // 3️⃣ — Enregistrement final dans MongoDB (phase 2)
+    setProgress(85); // phase "register" démarre ici
+
+    const embedUrl = `https://player.vimeo.com/video/${vimeoId}`;
+    const shareUrl = `https://vimeo.com/${vimeoId}`;
+
+    const payload = {
+      title: formData.title,
+      description: formData.description,
+      vimeoId,
+      embedUrl,
+      shareUrl,
+      isPrivate: formData.isPrivate,
+      creationDate: formData.creationDate,
+    };
+
+    await addVideo(payload);
+
+    // Simule progression finale douce (85 → 100)
+    for (let i = 86; i <= 100; i++) {
+      await new Promise((r) => setTimeout(r, 25));
+      setProgress(i);
     }
 
-    setIsLoading(true);
+    toast({
+      title: "✅ Wideo przesłane",
+      description: "Nowe wideo zostało zapisane w archiwum willi.",
+    });
+
+    // Reset form
+    setFormData({
+      title: "",
+      description: "",
+      creationDate: "",
+      isPrivate: false,
+      file: null,
+    });
     setProgress(0);
+  } catch (err) {
+    console.error("Erreur upload vidéo :", err);
+    toast({
+      title: "❌ Błąd przesyłania",
+      description: "Nie udało się przesłać wideo.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    try {
-      // Étape 1️⃣ — Demande d’une URL d’upload à Vimeo
-      const { uploadUrl, vimeoId } = await videoService.createUploadUrl(
-        formData.title,
-        formData.description,
-        formData.file.size,
-        formData.isPrivate
-      );
-
-      // toast({
-      //   title: "🔗 Utworzono połączenie Vimeo",
-      //   description: "Rozpoczynam przesyłanie filmu...",
-      // });
-
-      // Étape 2️⃣ — Upload du fichier vidéo sur Vimeo (TUS)
-      await videoService.uploadToVimeo(uploadUrl, formData.file);
-
-      // Étape 3️⃣ — Enregistrer la vidéo dans MongoDB
-      const embedUrl = `https://player.vimeo.com/video/${vimeoId}`;
-      const shareUrl = `https://vimeo.com/${vimeoId}`;
-
-      const payload = {
-        title: formData.title,
-        description: formData.description,
-        vimeoId,
-        embedUrl,
-        shareUrl,
-        isPrivate: formData.isPrivate,
-        creationDate: formData.creationDate,
-      };
-
-      await addVideo(payload);
-
-      toast({
-        title: "✅ Wideo przesłane",
-        description: "Nowe wideo zostało zapisane w archiwum willi.",
-      });
-
-      // 🔄 Reset formulaire
-      setFormData({
-        title: "",
-        description: "",
-        creationDate: "",
-        isPrivate: false,
-        file: null,
-      });
-      setProgress(0);
-    } catch (err) {
-      console.error("Erreur upload vidéo :", err);
-      toast({
-        title: "❌ Błąd przesyłania",
-        description: "Nie udało się przesłać wideo.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <>
-      {/* 🌀 Overlay loader plein écran */}
-      {isLoading && (
+      {/* {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50 backdrop-blur-sm">
           <Loader2 className="w-10 h-10 text-white animate-spin mb-4" />
           <p className="text-white text-lg font-medium mb-4">
             Przesyłanie wideo...
           </p>
 
-          {/* Barre de progression (centrale) */}
           {progress > 0 && (
             <div className="w-64 bg-gray-300 rounded-full h-2 overflow-hidden">
               <div
@@ -140,7 +223,24 @@ const AddVideo: React.FC = () => {
             </div>
           )}
         </div>
-      )}
+      )} */}
+      {isLoading && (
+  <div className="fixed inset-0 bg-black/70 flex flex-col items-center justify-center z-50 backdrop-blur-sm px-6">
+    <p className="text-white text-lg font-semibold mb-4">
+      Przesyłanie wideo: {progress}%
+    </p>
+
+    <div className="w-72 bg-white/30 rounded-full h-3 overflow-hidden">
+      <div
+        className="bg-gradient-to-r from-white via-gray-100 to-white h-3 rounded-full transition-all duration-300"
+        style={{ width: `${progress}%` }}
+      ></div>
+    </div>
+
+    <p className="text-gray-300 text-sm mt-3">Nie zamykaj tej strony...</p>
+  </div>
+)}
+
 
       <div className="luxury-card p-8">
         <div className="mb-8">

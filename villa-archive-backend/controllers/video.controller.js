@@ -61,133 +61,42 @@ exports.createUploadUrl = async (req, res) => {
  * 🧾 Étape 2 : Enregistre la vidéo dans MongoDB après upload
  * Frontend envoie : { title, description, thumbnail, vimeoId, creationDate, isPrivate }
  */
-// exports.registerVideo = async (req, res) => {
-//   try {
-//     const { title, description, thumbnail, vimeoId, isPrivate, creationDate } = req.body;
-
-//     if (!vimeoId) {
-//       return res.status(400).json({ message: "vimeoId est requis." });
-//     }
-
-//     // 📡 Récupérer les métadonnées depuis Vimeo
-//     const vimeoRes = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
-//       headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
-//     });
-
-//     if (!vimeoRes.ok) {
-//       const errorText = await vimeoRes.text();
-//       console.error("Erreur récupération métadonnées Vimeo :", errorText);
-//       return res.status(400).json({ message: "Impossible de récupérer les infos Vimeo." });
-//     }
-
-//     const vimeoData = await vimeoRes.json();
-
-//     // 🎞️ Générer les URLs
-//     const embedUrl = `https://player.vimeo.com/video/${vimeoId}`;
-//     const shareUrl = vimeoData.link || `https://vimeo.com/${vimeoId}`;
-//     const finalThumbnail = thumbnail || vimeoData?.pictures?.sizes?.pop()?.link || "";
-
-//     // 💾 Enregistrement MongoDB
-//     const newVideo = new Video({
-//       title: title || vimeoData.name,
-//       description: description || vimeoData.description,
-//       thumbnail: finalThumbnail,
-//       embedUrl,
-//       shareUrl,
-//       vimeoId,
-//       creationDate: creationDate || new Date().toISOString().split("T")[0],
-//       isPrivate: isPrivate ?? false,
-//     });
-
-//     await newVideo.save();
-
-//     res.status(201).json({
-//       message: "Vidéo enregistrée dans la base ✅",
-//       video: newVideo,
-//     });
-//   } catch (err) {
-//     console.error("Erreur enregistrement vidéo :", err);
-//     res.status(500).json({ message: "Erreur serveur" });
-//   }
-// };
-
 exports.registerVideo = async (req, res) => {
   try {
-    const { title, description, embedUrl, shareUrl, vimeoId, creationDate, isPrivate } = req.body;
+    const { title, description, thumbnail, vimeoId, isPrivate, creationDate } = req.body;
 
     if (!vimeoId) {
-      return res.status(400).json({ message: "Missing Vimeo ID." });
+      return res.status(400).json({ message: "vimeoId est requis." });
     }
 
-    // 🧠 Fonction utilitaire pour récupérer les infos vidéo Vimeo
-    const getVimeoData = async () => {
-      const vimeoRes = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
-        headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
-      });
-      if (!vimeoRes.ok) {
-        const errorText = await vimeoRes.text();
-        console.error("Erreur API Vimeo:", errorText);
-        throw new Error("Erreur récupération vidéo Vimeo");
-      }
-      return vimeoRes.json();
-    };
+    // 📡 Récupérer les métadonnées depuis Vimeo
+    const vimeoRes = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
+      headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
+    });
 
-    // 🕓 Attente du transcodage si nécessaire
-    let vimeoData = await getVimeoData();
-    let attempts = 0;
-    while (vimeoData?.transcode?.status !== "complete" && attempts < 20) {
-      console.log(`⏳ En attente du transcodage... (${attempts + 1}/20)`);
-      await new Promise((r) => setTimeout(r, 5000));
-      vimeoData = await getVimeoData();
-      attempts++;
+    if (!vimeoRes.ok) {
+      const errorText = await vimeoRes.text();
+      console.error("Erreur récupération métadonnées Vimeo :", errorText);
+      return res.status(400).json({ message: "Impossible de récupérer les infos Vimeo." });
     }
 
-    console.log("🎥 Vimeo data:", vimeoData);
+    const vimeoData = await vimeoRes.json();
 
-    // 🖼️ Récupération améliorée des miniatures
-    let finalThumbnail = null;
+    // 🎞️ Générer les URLs
+    const embedUrl = `https://player.vimeo.com/video/${vimeoId}`;
+    const shareUrl = vimeoData.link || `https://vimeo.com/${vimeoId}`;
+    const finalThumbnail = thumbnail || vimeoData?.pictures?.sizes?.pop()?.link || "";
 
-    // 1️⃣ Prendre la plus grande miniature dispo
-    if (vimeoData?.pictures?.sizes?.length > 0) {
-      finalThumbnail = vimeoData.pictures.sizes.at(-1).link;
-    }
-
-    // 2️⃣ Sinon base_link (souvent sur vidéos non encore prêtes)
-    else if (vimeoData?.pictures?.base_link) {
-      finalThumbnail = vimeoData.pictures.base_link;
-    }
-
-    // 3️⃣ Sinon essayer de requêter /pictures séparément
-    else if (vimeoData?.metadata?.connections?.pictures?.uri) {
-      const picUri = vimeoData.metadata.connections.pictures.uri;
-      const picRes = await fetch(`https://api.vimeo.com${picUri}`, {
-        headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
-      });
-      if (picRes.ok) {
-        const picData = await picRes.json();
-        if (picData?.data?.[0]?.sizes?.length > 0) {
-          finalThumbnail = picData.data[0].sizes.at(-1).link;
-        } else {
-          finalThumbnail = picData?.data?.[0]?.link || null;
-        }
-      }
-    }
-
-    // 4️⃣ Fallback si aucune image trouvée
-    if (!finalThumbnail) {
-      finalThumbnail = "https://i.vimeocdn.com/video/default-2308240_1920x1080?region=us";
-    }
-
-    // 💾 Sauvegarde MongoDB
+    // 💾 Enregistrement MongoDB
     const newVideo = new Video({
       title: title || vimeoData.name,
       description: description || vimeoData.description,
       thumbnail: finalThumbnail,
-      embedUrl: embedUrl || vimeoData.player_embed_url,
-      shareUrl: shareUrl || vimeoData.link,
+      embedUrl,
+      shareUrl,
       vimeoId,
-      creationDate: creationDate || new Date().toISOString(),
-      isPrivate: !!isPrivate,
+      creationDate: creationDate || new Date().toISOString().split("T")[0],
+      isPrivate: isPrivate ?? false,
     });
 
     await newVideo.save();
@@ -197,10 +106,101 @@ exports.registerVideo = async (req, res) => {
       video: newVideo,
     });
   } catch (err) {
-    console.error("❌ Erreur création vidéo Vimeo :", err);
+    console.error("Erreur enregistrement vidéo :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+// exports.registerVideo = async (req, res) => {
+//   try {
+//     const { title, description, embedUrl, shareUrl, vimeoId, creationDate, isPrivate } = req.body;
+
+//     if (!vimeoId) {
+//       return res.status(400).json({ message: "Missing Vimeo ID." });
+//     }
+
+//     // 🧠 Fonction utilitaire pour récupérer les infos vidéo Vimeo
+//     const getVimeoData = async () => {
+//       const vimeoRes = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
+//         headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
+//       });
+//       if (!vimeoRes.ok) {
+//         const errorText = await vimeoRes.text();
+//         console.error("Erreur API Vimeo:", errorText);
+//         throw new Error("Erreur récupération vidéo Vimeo");
+//       }
+//       return vimeoRes.json();
+//     };
+
+//     // 🕓 Attente du transcodage si nécessaire
+//     let vimeoData = await getVimeoData();
+//     let attempts = 0;
+//     while (vimeoData?.transcode?.status !== "complete" && attempts < 20) {
+//       console.log(`⏳ En attente du transcodage... (${attempts + 1}/20)`);
+//       await new Promise((r) => setTimeout(r, 5000));
+//       vimeoData = await getVimeoData();
+//       attempts++;
+//     }
+
+//     console.log("🎥 Vimeo data:", vimeoData);
+
+//     // 🖼️ Récupération améliorée des miniatures
+//     let finalThumbnail = null;
+
+//     // 1️⃣ Prendre la plus grande miniature dispo
+//     if (vimeoData?.pictures?.sizes?.length > 0) {
+//       finalThumbnail = vimeoData.pictures.sizes.at(-1).link;
+//     }
+
+//     // 2️⃣ Sinon base_link (souvent sur vidéos non encore prêtes)
+//     else if (vimeoData?.pictures?.base_link) {
+//       finalThumbnail = vimeoData.pictures.base_link;
+//     }
+
+//     // 3️⃣ Sinon essayer de requêter /pictures séparément
+//     else if (vimeoData?.metadata?.connections?.pictures?.uri) {
+//       const picUri = vimeoData.metadata.connections.pictures.uri;
+//       const picRes = await fetch(`https://api.vimeo.com${picUri}`, {
+//         headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
+//       });
+//       if (picRes.ok) {
+//         const picData = await picRes.json();
+//         if (picData?.data?.[0]?.sizes?.length > 0) {
+//           finalThumbnail = picData.data[0].sizes.at(-1).link;
+//         } else {
+//           finalThumbnail = picData?.data?.[0]?.link || null;
+//         }
+//       }
+//     }
+
+//     // 4️⃣ Fallback si aucune image trouvée
+//     if (!finalThumbnail) {
+//       finalThumbnail = "https://i.vimeocdn.com/video/default-2308240_1920x1080?region=us";
+//     }
+
+//     // 💾 Sauvegarde MongoDB
+//     const newVideo = new Video({
+//       title: title || vimeoData.name,
+//       description: description || vimeoData.description,
+//       thumbnail: finalThumbnail,
+//       embedUrl: embedUrl || vimeoData.player_embed_url,
+//       shareUrl: shareUrl || vimeoData.link,
+//       vimeoId,
+//       creationDate: creationDate || new Date().toISOString(),
+//       isPrivate: !!isPrivate,
+//     });
+
+//     await newVideo.save();
+
+//     res.status(201).json({
+//       message: "Vidéo enregistrée dans la base ✅",
+//       video: newVideo,
+//     });
+//   } catch (err) {
+//     console.error("❌ Erreur création vidéo Vimeo :", err);
+//     res.status(500).json({ message: "Erreur serveur" });
+//   }
+// };
 
 /* -------------------------------------------------------------------------- */
 /* 📋  Autres opérations CRUD standard                                        */
