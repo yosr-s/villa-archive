@@ -9,6 +9,7 @@ interface VideoContextType {
   updateVideo: (id: string, updates?: Partial<Video>) => Promise<void>;
   deleteVideo: (id: string) => Promise<void>;
   getPublicVideos: () => Video[];
+  downloadVideo: (vimeoId: string) => Promise<void>;
 }
 
 const VideoContext = createContext<VideoContextType | undefined>(undefined);
@@ -122,13 +123,33 @@ export const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   /* -------------------------------------------------------------------------- */
+  /* 📥 Télécharger une vidéo                                                   */
+  /* -------------------------------------------------------------------------- */
+  const downloadVideo = async (vimeoId: string) => {
+    try {
+      await videoService.downloadVideo(vimeoId);
+      toast({
+        title: "📥 Pobieranie",
+        description: "Wideo zostało pobrane pomyślnie.",
+      });
+    } catch (err) {
+      console.error("Erreur téléchargement vidéo :", err);
+      toast({
+        title: "❌ Błąd",
+        description: "Nie udało się pobrać wideo.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  /* -------------------------------------------------------------------------- */
   /* 🌍 Filtrer uniquement les vidéos publiques                                 */
   /* -------------------------------------------------------------------------- */
   const getPublicVideos = () => videos.filter((v) => !v.isPrivate);
 
   return (
     <VideoContext.Provider
-      value={{ videos, addVideo, updateVideo, deleteVideo, getPublicVideos }}
+      value={{ videos, addVideo, updateVideo, deleteVideo,downloadVideo, getPublicVideos }}
     >
       {children}
     </VideoContext.Provider>

@@ -19,7 +19,7 @@ interface ExploreArchiveProps {
 }
 
 const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
-  const { videos, getPublicVideos, updateVideo, deleteVideo } = useVideos();
+  const { videos, getPublicVideos, updateVideo, deleteVideo, downloadVideo  } = useVideos();
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +31,19 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
       description: `Wideo jest teraz ${isPrivate ? "prywatne" : "publiczne"}.`,
     });
   };
+
+  const handleDownload = async (vimeoId: string) => {
+  try {
+    await downloadVideo(vimeoId);
+  } catch {
+    toast({
+      title: "❌ Błąd",
+      description: "Nie udało się pobrać wideo.",
+      variant: "destructive",
+    });
+  }
+};
+
 
   /** 🎞️ Admin voit tout, użytkownik tylko publiczne */
   const displayVideos = isAdmin ? videos : getPublicVideos();
@@ -60,6 +73,8 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
       toast({ title: "Link skopiowany ✅", description: text });
     }
   };
+
+  
 
   const handleCopyShareLink = (id: string) => copyToClipboard(buildShareLink(id));
   const handleCopyEmbedUrl = (url: string) => copyToClipboard(url);
@@ -164,6 +179,48 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                         Kopiuj Link
                       </button>
                     </div>
+                    
+                    {/* <div
+                    className="absolute top-3 right-3 flex items-center gap-2 
+                    opacity-100 md:opacity-0 md:group-hover:opacity-100
+                    transition-opacity duration-200 z-20"
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCopyEmbedUrl(video.shareUrl);
+                      }}
+                      className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
+                      title="Kopiuj bezpośredni link Vimeo"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      Kopiuj Link
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownload(video.vimeoId);
+                      }}
+                      className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
+                      title="Pobierz wideo"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+                      </svg>
+                      Pobierz
+                    </button>
+                  </div> */}
+
 
                     {/* Miniatura */}
                     <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer">

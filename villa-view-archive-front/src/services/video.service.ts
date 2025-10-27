@@ -176,4 +176,40 @@ export const videoService = {
       throw error.response?.data || { message: "Erreur mise à jour vidéo" };
     }
   },
+
+    /**
+   * 🔟 Télécharger une vidéo depuis Vimeo (via backend proxy)
+   * @param vimeoId ID Vimeo de la vidéo
+   */
+  async downloadVideo(vimeoId: string) {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/videos/${vimeoId}/download`,
+        {
+          responseType: "blob", // 🎥 important pour gérer le binaire
+        }
+      );
+
+      // 🧱 Création du blob pour téléchargement local
+      const blob = new Blob([response.data], { type: "video/mp4" });
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${vimeoId}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+      return true;
+    } catch (error: any) {
+      console.error(
+        "❌ Erreur téléchargement vidéo :",
+        error.response?.data || error.message
+      );
+      throw error.response?.data || { message: "Erreur téléchargement vidéo" };
+    }
+  },
+
 };

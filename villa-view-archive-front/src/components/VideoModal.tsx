@@ -114,7 +114,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
           </div>
 
           {/* 🔗 Lien direct */}
-          {/* {video.shareUrl && (
+          {video.shareUrl && (
             <div className="mt-6 text-center">
               <a
                 href={video.shareUrl}
@@ -125,7 +125,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
                 Otwórz w Vimeo ↗
               </a>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </div>

@@ -434,3 +434,79 @@ exports.updateVideoById = async (req, res) => {
   }
 };
 
+// 📥 Télécharger la vidéo depuis Vimeo
+// exports.downloadVideo = async (req, res) => {
+//   try {
+//     const { vimeoId } = req.params;
+//     if (!vimeoId) {
+//       return res.status(400).json({ message: "Vimeo ID manquant." });
+//     }
+
+//     // 1️⃣ Récupérer les infos de la vidéo depuis Vimeo
+//     const response = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
+//       headers: { Authorization: `Bearer ${VIMEO_ACCESS_TOKEN}` },
+//     });
+
+//     if (!response.ok) {
+//       const errText = await response.text();
+//       console.error("Erreur récupération vidéo :", errText);
+//       return res.status(400).json({ message: "Impossible d'accéder à la vidéo." });
+//     }
+
+//     const data = await response.json();
+
+//     // 2️⃣ Trouver le lien de téléchargement (si disponible)
+//     const downloadLink = data?.download?.[0]?.link || data?.files?.[0]?.link;
+
+//     if (!downloadLink) {
+//       return res.status(403).json({
+//         message: "Téléchargement non autorisé pour cette vidéo.",
+//       });
+//     }
+
+//     // 3️⃣ Télécharger le flux et le transférer au client
+//     const fileRes = await fetch(downloadLink);
+//     res.setHeader("Content-Type", "video/mp4");
+//     res.setHeader("Content-Disposition", `attachment; filename="${data.name || vimeoId}.mp4"`);
+//     fileRes.body.pipe(res);
+
+//   } catch (err) {
+//     console.error("❌ Erreur téléchargement vidéo :", err);
+//     res.status(500).json({ message: "Erreur serveur lors du téléchargement." });
+//   }
+// };
+
+
+// controllers/video.controller.js
+// controllers/videoController.js
+exports.downloadVideo = async (req, res) => {
+  try {
+    const { vimeoId } = req.params;
+    const headers = { Authorization: `Bearer ${process.env.VIMEO_ACCESS_TOKEN}` };
+
+    // 🔹 1. Récupérer la version actuelle
+    const versionRes = await fetch(`https://api.vimeo.com/videos/${vimeoId}/versions`, { headers });
+    const versionData = await versionRes.json();
+    const versionId = versionData?.data?.[0]?.uri?.split("/").pop();
+    if (!versionId) return res.status(404).json({ message: "Aucune version trouvée" });
+
+    // 🔹 2. Récupérer les liens de téléchargement
+    const downloadsRes = await fetch(`https://api.vimeo.com/videos/${vimeoId}/versions/${versionId}/downloads`, { headers });
+    const downloads = await downloadsRes.json();
+
+    const best = downloads?.data?.sort((a, b) => (b.height || 0) - (a.height || 0))[0];
+    if (!best || !best.link) return res.status(403).json({ message: "Aucun lien de téléchargement trouvé." });
+
+    // 🔹 3. Streamer le fichier vers le client
+    const streamRes = await fetch(best.link);
+    if (!streamRes.ok) return res.status(500).json({ message: "Erreur téléchargement Vimeo" });
+
+    res.setHeader("Content-Disposition", `attachment; filename="${vimeoId}.mp4"`);
+    res.setHeader("Content-Type", streamRes.headers.get("content-type") || "video/mp4");
+    streamRes.body.pipe(res);
+  } catch (err) {
+    console.error("Erreur downloadVideo:", err);
+    res.status(500).json({ message: "Erreur serveur téléchargement" });
+  }
+};
+
