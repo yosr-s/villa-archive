@@ -82,16 +82,27 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
   /** 🟠 Aucun wideo */
   if (sortedVideos.length === 0) {
     return (
-      <div className="luxury-card p-12 text-center">
-        <h2 className="font-luxury text-2xl font-semibold text-luxury-darkGrey mb-4">
-          Brak wideo
-        </h2>
-        <p className="text-luxury-grey">
-          {isAdmin
-            ? "Dodaj swoje pierwsze wideo, aby rozpocząć archiwum."
-            : "Brak dostępnych publicznych nagrań wideo."}
-        </p>
-      </div>
+      // <div className="luxury-card p-12 text-center">
+      //   <h2 className="font-luxury text-2xl font-semibold text-luxury-darkGrey mb-4">
+      //     Brak wideo
+      //   </h2>
+      //   <p className="text-luxury-grey">
+      //     {isAdmin
+      //       ? "Dodaj swoje pierwsze wideo, aby rozpocząć archiwum."
+      //       : "Brak dostępnych publicznych nagrań wideo."}
+      //   </p>
+      // </div>
+      <div className="luxury-card p-12 text-center border border-gray-700/60 bg-[#111] shadow-md shadow-gray-800/40 hover:shadow-gray-500/20 transition-all duration-500 rounded-2xl">
+  <h2 className="font-luxury text-2xl font-semibold text-gray-100 mb-4 drop-shadow-[0_0_8px_rgba(200,200,200,0.15)]">
+    Brak wideo
+  </h2>
+  <p className="text-gray-400 tracking-wide">
+    {isAdmin
+      ? "Dodaj swoje pierwsze wideo, aby rozpocząć archiwum."
+      : "Brak dostępnych publicznych nagrań wideo."}
+  </p>
+</div>
+
     );
   }
 
