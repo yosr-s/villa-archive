@@ -6,12 +6,16 @@ import AddVideo from '../components/admin/AddVideo';
 import VideoList from '../components/admin/VideoList';
 import ExploreArchive from '../components/ExploreArchive';
 import { toast } from "@/hooks/use-toast"; // ✅ importe bien ton hook
+import { useTheme } from "../hooks/useTheme";
+import { Moon, Sun } from "lucide-react";
 
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, setTheme } = useTheme();
+
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
