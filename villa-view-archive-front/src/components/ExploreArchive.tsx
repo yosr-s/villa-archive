@@ -96,239 +96,379 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
   }
 
   return (
-    <div className="relative">
-      {/* 🏷️ Titre */}
-      <div className="mb-12 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-        >
-          {/* <h1
-            className="text-black"
-            style={{ fontFamily: "Archivo", fontSize: "3rem" }}
-          >
-            Oś czasu archiwum willi
-          </h1>
-          <p
-            style={{ fontFamily: "Archivo", fontSize: "1rem", color: "black" }}
-          >
-            Odkryj piękno i elegancję uchwycone na przestrzeni czasu.
-          </p> */}
-        </motion.h1>
-      </div>
+//     <div className="relative">
+//       {/* 🏷️ Titre */}
+//       <div className="mb-12 text-center">
+//         <motion.h1
+//           initial={{ opacity: 0, y: 20 }}
+//           animate={{ opacity: 1, y: 0 }}
+//           transition={{ duration: 1.2, ease: "easeOut" }}
+//         >
+//           {/* <h1
+//             className="text-black"
+//             style={{ fontFamily: "Archivo", fontSize: "3rem" }}
+//           >
+//             Oś czasu archiwum willi
+//           </h1>
+//           <p
+//             style={{ fontFamily: "Archivo", fontSize: "1rem", color: "black" }}
+//           >
+//             Odkryj piękno i elegancję uchwycone na przestrzeni czasu.
+//           </p> */}
+//         </motion.h1>
+//       </div>
 
-      {/* 📜 Timeline */}
-      <div ref={contentRef} className="relative max-w-6xl mx-auto px-4 md:px-0">
-        {/* Ligne centrale */}
-        <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-1 bg-luxury-silver h-full z-0" />
+//       {/* 📜 Timeline */}
+//       <div ref={contentRef} className="relative max-w-6xl mx-auto px-4 md:px-0">
+//         {/* Ligne centrale */}
+//         <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-1 bg-luxury-silver h-full z-0" />
 
-        {/* Items */}
-        <div className="flex flex-col space-y-24">
-          {sortedVideos.map((video, index) => {
-            const isLeft = index % 2 === 0;
-            const videoDate = new Date(video.creationDate).toLocaleDateString();
+//         {/* Items */}
+//         <div className="flex flex-col space-y-24">
+//           {sortedVideos.map((video, index) => {
+//             const isLeft = index % 2 === 0;
+//             const videoDate = new Date(video.creationDate).toLocaleDateString();
 
-            return (
-              <div
-                key={video._id}
-                className={`relative flex w-full 
-                  ${isLeft ? "md:justify-start" : "md:justify-end"} 
-                  md:items-center`}
-              >
-                {/* Point timeline */}
-                <div className="hidden md:block absolute left-1/2 -translate-x-1/2 z-10">
-                  <div className="w-5 h-5 bg-luxury-silver rounded-full border-4 border-white luxury-shadow"></div>
-                </div>
+//             return (
+//               <div
+//                 key={video._id}
+//                 className={`relative flex w-full 
+//                   ${isLeft ? "md:justify-start" : "md:justify-end"} 
+//                   md:items-center`}
+//               >
+//                 {/* Point timeline */}
+//                 <div className="hidden md:block absolute left-1/2 -translate-x-1/2 z-10">
+//                   <div className="w-5 h-5 bg-luxury-silver rounded-full border-4 border-white luxury-shadow"></div>
+//                 </div>
 
-                {/* Date */}
-                <div
-                  className={`absolute top-1/2 -translate-y-1/2 z-20 hidden md:block
-                    ${isLeft ? "right-[calc(50%+0.7rem)]" : "left-[calc(50%+0.9rem)]"}`
-                  }
-                >
-                  <div className="flex items-center bg-luxury-silver text-luxury-darkGrey px-3 py-1 rounded-full text-sm font-medium luxury-shadow whitespace-nowrap">
-                    <Calendar className="w-3 h-3 mr-1" />
-                    <span>{videoDate}</span>
-                  </div>
-                </div>
+//                 {/* Date */}
+//                 <div
+//                   className={`absolute top-1/2 -translate-y-1/2 z-20 hidden md:block
+//                     ${isLeft ? "right-[calc(50%+0.7rem)]" : "left-[calc(50%+0.9rem)]"}`
+//                   }
+//                 >
+//                   <div className="flex items-center bg-luxury-silver text-luxury-darkGrey px-3 py-1 rounded-full text-sm font-medium luxury-shadow whitespace-nowrap">
+//                     <Calendar className="w-3 h-3 mr-1" />
+//                     <span>{videoDate}</span>
+//                   </div>
+//                 </div>
 
-                {/* 🧩 Card */}
-                <div
-                  className={`w-full md:w-5/12 ${
-                    isLeft ? "md:pr-10" : "md:pl-8"
-                  }`}
-                >
-                  <div className="luxury-card p-6 group hover:scale-105 transition-transform duration-300 relative cursor-pointer">
-                    {/* 🧷 Copy boutons */}
-                    <div
-                      className="absolute top-3 right-3 flex items-center gap-2 
-                    opacity-100 md:opacity-0 md:group-hover:opacity-100
-                    transition-opacity duration-200 z-20"
-                    >
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCopyEmbedUrl(video.shareUrl);
-                        }}
-                        className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
-                        title="Kopiuj bezpośredni link Vimeo"
-                      >
-                        <Copy className="w-3.5 h-3.5" />
-                        Kopiuj Link
-                      </button>
-                    </div>
+//                 {/* 🧩 Card */}
+//                 <div
+//                   className={`w-full md:w-5/12 ${
+//                     isLeft ? "md:pr-10" : "md:pl-8"
+//                   }`}
+//                 >
+//                   <div className="luxury-card p-6 group hover:scale-105 transition-transform duration-300 relative cursor-pointer">
+//                     {/* 🧷 Copy boutons */}
+//                     <div
+//                       className="absolute top-3 right-3 flex items-center gap-2 
+//                     opacity-100 md:opacity-0 md:group-hover:opacity-100
+//                     transition-opacity duration-200 z-20"
+//                     >
+//                       <button
+//                         type="button"
+//                         onClick={(e) => {
+//                           e.stopPropagation();
+//                           handleCopyEmbedUrl(video.shareUrl);
+//                         }}
+//                         className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
+//                         title="Kopiuj bezpośredni link Vimeo"
+//                       >
+//                         <Copy className="w-3.5 h-3.5" />
+//                         Kopiuj Link
+//                       </button>
+//                     </div>
                     
-                    {/* <div
-                    className="absolute top-3 right-3 flex items-center gap-2 
-                    opacity-100 md:opacity-0 md:group-hover:opacity-100
-                    transition-opacity duration-200 z-20"
+//                     {/* <div
+//                     className="absolute top-3 right-3 flex items-center gap-2 
+//                     opacity-100 md:opacity-0 md:group-hover:opacity-100
+//                     transition-opacity duration-200 z-20"
+//                   >
+//                     <button
+//                       type="button"
+//                       onClick={(e) => {
+//                         e.stopPropagation();
+//                         handleCopyEmbedUrl(video.shareUrl);
+//                       }}
+//                       className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
+//                       title="Kopiuj bezpośredni link Vimeo"
+//                     >
+//                       <Copy className="w-3.5 h-3.5" />
+//                       Kopiuj Link
+//                     </button>
+
+//                     <button
+//                       type="button"
+//                       onClick={(e) => {
+//                         e.stopPropagation();
+//                         handleDownload(video.vimeoId);
+//                       }}
+//                       className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
+//                       title="Pobierz wideo"
+//                     >
+//                       <svg
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         className="w-3.5 h-3.5"
+//                         fill="none"
+//                         viewBox="0 0 24 24"
+//                         stroke="currentColor"
+//                         strokeWidth={2}
+//                       >
+//                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+//                       </svg>
+//                       Pobierz
+//                     </button>
+//                   </div> */}
+
+
+//                     {/* Miniatura */}
+//                     <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer">
+//                       {video.thumbnail ? (
+//                         <>
+//                           {/* <img
+//                             src={video.thumbnail}
+//                             alt={video.title}
+//                             className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+//                             onClick={() => setSelectedVideo(video)}
+//                           />
+//                           <div
+//                             className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+//                             onClick={() => setSelectedVideo(video)}
+//                           >
+//                             <Play className="w-12 h-12 text-white" />
+//                           </div> */}
+//                           <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video">
+//   <img
+//     src={video.thumbnail}
+//     alt={video.title}
+//     className="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-300 group-hover:scale-125"
+//     onClick={() => setSelectedVideo(video)}
+//   />
+//   <div
+//     className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+//     onClick={() => setSelectedVideo(video)}
+//   >
+//     <Play className="w-12 h-12 text-white" />
+//   </div>
+// </div>
+
+//                         </>
+//                       ) : (
+//                         <iframe
+//                           // src={video.embedUrl}
+//                           src={`${video.embedUrl}?quality=4K`}
+//                           className="w-full h-48 object-cover pointer-events-none"
+//                           frameBorder="0"
+//                           allow="autoplay; fullscreen; picture-in-picture"
+//                           allowFullScreen
+//                           title={video.title}
+//                         />
+//                       )}
+//                     </div>
+
+//                     {/* 🕓 Date mobile */}
+//                     <div className="flex justify-center mt-2 md:hidden">
+//                       <div className="flex items-center bg-luxury-silver text-luxury-darkGrey px-3 py-1 rounded-full text-xs font-medium luxury-shadow">
+//                         <Calendar className="w-3 h-3 mr-1" />
+//                         <span>{videoDate}</span>
+//                       </div>
+//                     </div>
+
+//                     <div className="text-center mt-2">
+//                       <h3 className="font-luxury text-xl font-semibold text-luxury-darkGrey mb-2">
+//                         {video.title}
+//                       </h3>
+//                     </div>
+
+//                     {/* 🧭 Visibilité admin */}
+//                     {isAdmin && (
+//                       <div className="py-4 px-2">
+//                         <div className="flex items-center justify-between w-full">
+//                           <span className="flex items-center space-x-1 text-sm">
+//                             {video.isPrivate ? (
+//                               <>
+//                                 <Lock className="w-4 h-4 text-orange-600" />
+//                                 <span className="text-orange-600">
+//                                   Prywatne
+//                                 </span>
+//                               </>
+//                             ) : (
+//                               <>
+//                                 <Globe className="w-4 h-4 text-green-600" />
+//                                 <span className="text-green-600">
+//                                   Publiczne
+//                                 </span>
+//                               </>
+//                             )}
+//                           </span>
+
+//                           <Switch
+//                             checked={!video.isPrivate}
+//                             onCheckedChange={(checked) =>
+//                               handleToggleVisibility(video._id, !checked)
+//                             }
+//                           />
+//                         </div>
+//                       </div>
+//                     )}
+//                   </div>
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* 🎬 Modal */}
+//       {selectedVideo && (
+//         <VideoModal
+//           video={selectedVideo}
+//           isOpen={!!selectedVideo}
+//           onClose={() => setSelectedVideo(null)}
+//         />
+//       )}
+//     </div>
+
+<div className="relative bg-[#0b0b0b] min-h-screen text-gray-100 font-sans">
+  {/* 🏷️ Titre (désactivé pour l’harmonisation avec le header du dashboard) */}
+  <div className="mb-12 text-center">
+    <motion.h1
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+    />
+  </div>
+
+  {/* 📜 Timeline */}
+  <div ref={contentRef} className="relative max-w-6xl mx-auto px-4 md:px-0">
+    {/* Ligne centrale */}
+    <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-[1px] bg-gradient-to-b from-gray-800 via-gray-600 to-gray-800 h-full z-0" />
+
+    {/* Items */}
+    <div className="flex flex-col space-y-24">
+      {sortedVideos.map((video, index) => {
+        const isLeft = index % 2 === 0;
+        const videoDate = new Date(video.creationDate).toLocaleDateString();
+
+        return (
+          <div
+            key={video._id}
+            className={`relative flex w-full ${
+              isLeft ? "md:justify-start" : "md:justify-end"
+            } md:items-center`}
+          >
+            {/* Point timeline */}
+            <div className="hidden md:block absolute left-1/2 -translate-x-1/2 z-10">
+              <div className="w-4 h-4 bg-gray-500 rounded-full border-[3px] border-[#0b0b0b] shadow-lg shadow-gray-700/30"></div>
+            </div>
+
+            {/* Date bubble */}
+            <div
+              className={`absolute top-1/2 -translate-y-1/2 z-20 hidden md:block ${
+                isLeft
+                  ? "right-[calc(50%+0.8rem)]"
+                  : "left-[calc(50%+0.8rem)]"
+              }`}
+            >
+              <div className="flex items-center bg-[#1a1a1a]/80 text-gray-300 px-3 py-1 rounded-full text-xs font-medium border border-gray-700 backdrop-blur-md shadow-md">
+                <Calendar className="w-3 h-3 mr-1 text-gray-400" />
+                <span>{videoDate}</span>
+              </div>
+            </div>
+
+            {/* 🧩 Card */}
+            <div
+              className={`w-full md:w-5/12 ${
+                isLeft ? "md:pr-10" : "md:pl-10"
+              }`}
+            >
+              <div className="group relative bg-[#121212] border border-gray-800 rounded-xl p-6 transition-transform duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg hover:shadow-gray-700/20">
+                {/* Copy / download buttons */}
+                <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-20">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyEmbedUrl(video.shareUrl);
+                    }}
+                    className="rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 px-2 py-1 flex items-center gap-1 text-xs border border-gray-600"
+                    title="Kopiuj link Vimeo"
                   >
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCopyEmbedUrl(video.shareUrl);
-                      }}
-                      className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
-                      title="Kopiuj bezpośredni link Vimeo"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                      Kopiuj Link
-                    </button>
+                    <Copy className="w-3.5 h-3.5 text-gray-400" />
+                    Kopiuj
+                  </button>
+                </div>
 
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDownload(video.vimeoId);
-                      }}
-                      className="rounded-full bg-white/90 hover:bg-white shadow px-2 py-1 flex items-center gap-1 text-xs font-medium"
-                      title="Pobierz wideo"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3.5 h-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
-                      </svg>
-                      Pobierz
-                    </button>
-                  </div> */}
-
-
-                    {/* Miniatura */}
-                    <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer">
-                      {video.thumbnail ? (
-                        <>
-                          {/* <img
-                            src={video.thumbnail}
-                            alt={video.title}
-                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onClick={() => setSelectedVideo(video)}
-                          />
-                          <div
-                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                            onClick={() => setSelectedVideo(video)}
-                          >
-                            <Play className="w-12 h-12 text-white" />
-                          </div> */}
-                          <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video">
+                {/* Miniature */}
+               <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video">
   <img
     src={video.thumbnail}
     alt={video.title}
-    className="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-300 group-hover:scale-125"
+    className="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-500 group-hover:scale-110 brightness-95 group-hover:brightness-100"
     onClick={() => setSelectedVideo(video)}
   />
   <div
     className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
     onClick={() => setSelectedVideo(video)}
   >
-    <Play className="w-12 h-12 text-white" />
+    <Play className="w-12 h-12 text-white drop-shadow-md" />
   </div>
 </div>
 
-                        </>
-                      ) : (
-                        <iframe
-                          // src={video.embedUrl}
-                          src={`${video.embedUrl}?autoplay=1&quality=4K`}
-                          className="w-full h-48 object-cover pointer-events-none"
-                          frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture"
-                          allowFullScreen
-                          title={video.title}
-                        />
-                      )}
-                    </div>
 
-                    {/* 🕓 Date mobile */}
-                    <div className="flex justify-center mt-2 md:hidden">
-                      <div className="flex items-center bg-luxury-silver text-luxury-darkGrey px-3 py-1 rounded-full text-xs font-medium luxury-shadow">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        <span>{videoDate}</span>
-                      </div>
-                    </div>
-
-                    <div className="text-center mt-2">
-                      <h3 className="font-luxury text-xl font-semibold text-luxury-darkGrey mb-2">
-                        {video.title}
-                      </h3>
-                    </div>
-
-                    {/* 🧭 Visibilité admin */}
-                    {isAdmin && (
-                      <div className="py-4 px-2">
-                        <div className="flex items-center justify-between w-full">
-                          <span className="flex items-center space-x-1 text-sm">
-                            {video.isPrivate ? (
-                              <>
-                                <Lock className="w-4 h-4 text-orange-600" />
-                                <span className="text-orange-600">
-                                  Prywatne
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <Globe className="w-4 h-4 text-green-600" />
-                                <span className="text-green-600">
-                                  Publiczne
-                                </span>
-                              </>
-                            )}
-                          </span>
-
-                          <Switch
-                            checked={!video.isPrivate}
-                            onCheckedChange={(checked) =>
-                              handleToggleVisibility(video._id, !checked)
-                            }
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                {/* Title */}
+                <div className="text-center mt-2">
+                  <h3 className="font-medium text-lg text-gray-100">
+                    {video.title}
+                  </h3>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* 🎬 Modal */}
-      {selectedVideo && (
-        <VideoModal
-          video={selectedVideo}
-          isOpen={!!selectedVideo}
-          onClose={() => setSelectedVideo(null)}
-        />
-      )}
+                {/* Visibility toggle for admin */}
+                {isAdmin && (
+                  <div className="py-4 px-2">
+                    <div className="flex items-center justify-between w-full">
+                      <span className="flex items-center space-x-1 text-sm">
+                        {video.isPrivate ? (
+                          <>
+                            <Lock className="w-4 h-4 text-yellow-500" />
+                            <span className="text-yellow-500">Prywatne</span>
+                          </>
+                        ) : (
+                          <>
+                            <Globe className="w-4 h-4 text-green-400" />
+                            <span className="text-green-400">Publiczne</span>
+                          </>
+                        )}
+                      </span>
+
+                      <Switch
+                        checked={!video.isPrivate}
+                        onCheckedChange={(checked) =>
+                          handleToggleVisibility(video._id, !checked)
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
+  </div>
+
+  {/* Modal */}
+  {selectedVideo && (
+    <VideoModal
+      video={selectedVideo}
+      isOpen={!!selectedVideo}
+      onClose={() => setSelectedVideo(null)}
+    />
+  )}
+</div>
+
+
   );
 };
 

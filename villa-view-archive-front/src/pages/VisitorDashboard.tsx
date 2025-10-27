@@ -41,7 +41,7 @@ const handleLogout = async () => {
         aria-hidden="true"
       /> */}
       <div
-  className="absolute inset-0 bg-gray-200" // couleur gris clair Tailwind
+  className="absolute inset-0 bg-luxury-silver" // couleur gris clair Tailwind
   style={{
     backgroundColor: "#f2f2f2", // optionnel : couleur personnalisée
     opacity: 1, // pas de transparence
