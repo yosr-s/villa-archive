@@ -80,13 +80,13 @@ exports.loginAdmin = async (req, res) => {
 
     // 🔑 Créer access & refresh tokens
     const accessToken = jwt.sign(
-      { id: admin._id, email: admin.email },
+      { id: admin._id, email: admin.email , role: "admin"},
       process.env.JWT_SECRET,
       { expiresIn: "1d" } // token de session
     );
 
     const refreshToken = jwt.sign(
-      { id: admin._id, email: admin.email },
+      { id: admin._id, email: admin.email , role: "admin" },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" } // refresh token valide 7 jours
     );

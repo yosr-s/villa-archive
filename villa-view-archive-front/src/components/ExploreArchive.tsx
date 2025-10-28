@@ -26,10 +26,10 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
   /** 🔁 Inversion de logique car backend = isPrivate */
   const handleToggleVisibility = (id: string, isPrivate: boolean) => {
     updateVideo(id, { isPrivate });
-    toast({
-      title: "Zaktualizowano widoczność",
-      description: `Wideo jest teraz ${isPrivate ? "prywatne" : "publiczne"}.`,
-    });
+    // toast({
+    //   title: "Zaktualizowano widoczność",
+    //   description: `Wideo jest teraz ${isPrivate ? "prywatne" : "publiczne"}.`,
+    // });
   };
 
   const handleDownload = async (vimeoId: string) => {
@@ -332,7 +332,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
 //     </div>
 
 <div className="relative bg-[#d9d9d9] min-h-screen text-gray-800 font-sans">
-  {/* Titre (désactivé) */}
+  {/* 🏷️ Titre */}
   <div className="mb-12 text-center">
     <motion.h1
       initial={{ opacity: 0, y: 20 }}
@@ -343,14 +343,13 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
 
   {/* 📜 Timeline */}
   <div ref={contentRef} className="relative max-w-6xl mx-auto px-4 md:px-0">
-    {/* Ligne centrale plus foncée */}
+    {/* Ligne centrale desktop */}
     <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-[#8c8c8c] via-[#7a7a7a] to-[#8c8c8c] h-full z-0" />
 
-    {/* Items */}
     <div className="flex flex-col space-y-24">
       {sortedVideos.map((video, index) => {
         const isLeft = index % 2 === 0;
-        const videoDate = new Date(video.creationDate).toLocaleDateString();
+        const videoDate = new Date(video.creationDate).toLocaleDateString("pl-PL");
 
         return (
           <div
@@ -359,12 +358,12 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
               isLeft ? "md:justify-start" : "md:justify-end"
             } md:items-center`}
           >
-            {/* Point timeline */}
+            {/* Point timeline (desktop) */}
             <div className="hidden md:block absolute left-1/2 -translate-x-1/2 z-10">
               <div className="w-4 h-4 bg-[#7a7a7a] rounded-full border-[3px] border-[#d9d9d9] shadow-md shadow-gray-500/30"></div>
             </div>
 
-            {/* Date bubble */}
+            {/* Bulle de date (desktop uniquement) */}
             <div
               className={`absolute top-1/2 -translate-y-1/2 z-20 hidden md:block ${
                 isLeft
@@ -385,12 +384,21 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
               }`}
             >
               <div className="group relative bg-[#e4e4e4] border border-gray-400 rounded-xl p-6 transition-transform duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md hover:shadow-gray-500/30">
+                
+                {/* 🕓 Date en haut pour mobile uniquement */}
+                <div className="flex justify-center mb-4 md:hidden">
+                  <div className="flex items-center bg-[#ececec] text-gray-700 px-3 py-1 rounded-full text-xs font-medium border border-gray-500 shadow-sm">
+                    <Calendar className="w-3 h-3 mr-1 text-gray-600" />
+                    <span>{videoDate}</span>
+                  </div>
+                </div>
+
                 {/* Boutons copier */}
                 <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-20">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleCopyEmbedUrl(video.shareUrl);
+                      handleCopyEmbedUrl(video.embedUrl);
                     }}
                     className="rounded-full bg-[#d9d9d9] hover:bg-[#d0d0d0] text-gray-700 px-2 py-1 flex items-center gap-1 text-xs border border-gray-500"
                     title="Kopiuj link Vimeo"
@@ -400,7 +408,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                   </button>
                 </div>
 
-                {/* 📸 Miniature avec zoom */}
+                {/* 📸 Miniature */}
                 <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video border border-gray-400/50">
                   <img
                     src={video.thumbnail}
@@ -423,7 +431,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                   </h3>
                 </div>
 
-                {/* Toggle visibilité admin */}
+                {/* 🔒 Toggle visibilité admin */}
                 {isAdmin && (
                   <div className="py-4 px-2">
                     <div className="flex items-center justify-between w-full">
@@ -441,24 +449,18 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                         )}
                       </span>
 
-                      {/* <Switch
+                      {/* Switch noir / gris */}
+                      <Switch
                         checked={!video.isPrivate}
                         onCheckedChange={(checked) =>
                           handleToggleVisibility(video._id, !checked)
                         }
-                      /> */}
-                      <Switch
-  checked={!video.isPrivate}
-  onCheckedChange={(checked) =>
-    handleToggleVisibility(video._id, !checked)
-  }
-  className={`
-    relative inline-flex h-6 w-11 items-center rounded-full border transition-all duration-300
-    data-[state=checked]:bg-[#333333] data-[state=checked]:border-[#1a1a1a] data-[state=checked]:shadow-[0_0_6px_rgba(0,0,0,0.4)]
-    data-[state=unchecked]:bg-[#999999] data-[state=unchecked]:border-[#666666] data-[state=unchecked]:shadow-inner
-  `}
-/>
-
+                        className={`
+                          relative inline-flex h-6 w-11 items-center rounded-full border transition-all duration-300
+                          data-[state=checked]:bg-[#333333] data-[state=checked]:border-[#1a1a1a] data-[state=checked]:shadow-[0_0_6px_rgba(0,0,0,0.4)]
+                          data-[state=unchecked]:bg-[#999999] data-[state=unchecked]:border-[#666666] data-[state=unchecked]:shadow-inner
+                        `}
+                      />
                     </div>
                   </div>
                 )}
@@ -470,7 +472,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
     </div>
   </div>
 
-  {/* Modal */}
+  {/* 🎬 Modal */}
   {selectedVideo && (
     <VideoModal
       video={selectedVideo}
@@ -479,6 +481,8 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
     />
   )}
 </div>
+
+
 
 
 
