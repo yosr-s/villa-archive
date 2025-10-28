@@ -394,7 +394,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                 </div>
 
                 {/* Boutons copier */}
-                <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-20">
+                {/* <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-20">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -406,7 +406,28 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                     <Copy className="w-3.5 h-3.5 text-gray-600" />
                     Kopiuj
                   </button>
-                </div>
+                </div> */}
+                {/* Boutons copier */}
+<div
+  className="
+    absolute top-3 right-3 flex items-center gap-2 
+    opacity-100 md:opacity-0 md:group-hover:opacity-100
+    transition-opacity duration-200 z-20
+  "
+>
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleCopyEmbedUrl(video.embedUrl);
+    }}
+    className="rounded-full bg-[#d9d9d9] hover:bg-[#d0d0d0] text-gray-700 px-2 py-1 flex items-center gap-1 text-xs border border-gray-500 shadow-sm"
+    title="Kopiuj link Vimeo"
+  >
+    <Copy className="w-3.5 h-3.5 text-gray-600" />
+    Kopiuj
+  </button>
+</div>
+
 
                 {/* 📸 Miniature */}
                 <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video border border-gray-400/50">
