@@ -12,35 +12,69 @@ const AdminLogin: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setIsLoading(true);
 
-    try {
-      const success = await login(email, password, "admin");
-if (success) {
-  toast({
-    title: "✅ Witamy ponownie!",
-    description: "Zalogowano pomyślnie jako administrator.",
-  });
-  navigate("/admin/dashboard");
-} else {
-  toast({
-    title: "❌ Logowanie nieudane",
-    description: "Nieprawidłowy adres e-mail lub hasło.",
-    variant: "destructive",
-  });
-}
-} catch (error) {
-  toast({
-    title: "Błąd",
-    description: "Wystąpił problem podczas logowania.",
-    variant: "destructive",
-  });
-} finally {
-  setIsLoading(false);
-}
-  };
+//     try {
+//       const success = await login(email, password, "admin");
+// if (success) {
+//   toast({
+//     title: "✅ Witamy ponownie!",
+//     description: "Zalogowano pomyślnie jako administrator.",
+//   });
+//   navigate("/admin/dashboard");
+// } else {
+//   toast({
+//     title: "❌ Logowanie nieudane",
+//     description: "Nieprawidłowy adres e-mail lub hasło.",
+//     variant: "destructive",
+//   });
+// }
+// } catch (error) {
+//   toast({
+//     title: "Błąd",
+//     description: "Wystąpił problem podczas logowania.",
+//     variant: "destructive",
+//   });
+// } finally {
+//   setIsLoading(false);
+// }
+//   };
+
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  try {
+    // ici 'login' renvoie true ou false
+    const success = await login(email, password, "admin");
+
+    if (success) {
+      toast({
+        title: "✅ Witamy ponownie!",
+        description: "Zalogowano pomyślnie jako administrator.",
+      });
+      navigate("/admin/dashboard");
+    } else {
+      toast({
+        title: "❌ Logowanie nieudane",
+        description: "Nieprawidłowy adres e-mail lub hasło.",
+        variant: "destructive",
+      });
+    }
+  } catch (error: any) {
+    toast({
+      title: "Błąd",
+      description: error?.message || "Wystąpił problem podczas logowania.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen relative">

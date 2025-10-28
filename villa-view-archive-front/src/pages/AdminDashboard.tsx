@@ -8,6 +8,7 @@ import ExploreArchive from '../components/ExploreArchive';
 import { toast } from "@/hooks/use-toast"; // ✅ importe bien ton hook
 import { useTheme } from "../hooks/useTheme";
 import { Moon, Sun } from "lucide-react";
+import { useVideos } from "../contexts/VideoContext";
 
 
 const AdminDashboard = () => {
@@ -15,13 +16,30 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
+  const { fetchVideos } = useVideos();
 
 
-  useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      navigate('/admin/login');
+  // useEffect(() => {
+  //   if (!user || user.role !== 'admin') {
+  //     navigate('/admin/login');
+  //   }
+  // }, [user, navigate]);
+   useEffect(() => {
+    if (!user || user.role !== "admin") {
+      navigate("/admin/login");
+    } else {
+      // 🔥 Charger les vidéos une seule fois après connexion
+      fetchVideos().catch((err) => {
+        console.warn("Erreur chargement vidéos :", err);
+        toast({
+          title: "⚠️ Błąd ładowania",
+          description: "Nie udało się załadować listy wideo.",
+          variant: "destructive",
+        });
+      });
     }
   }, [user, navigate]);
+
 
   if (!user || user.role !== 'admin') return null;
 

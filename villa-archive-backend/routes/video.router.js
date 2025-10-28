@@ -1,21 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const videoController = require("../controllers/video.controller");
-
+const verifyAccessToken= require("../middlewares/auth.middleware")
 // 🟣 Upload Vimeo complet
-router.post("/upload-url", videoController.createUploadUrl);  // Étape 1
-router.post("/register", videoController.registerVideo);      // Étape 2
+router.post("/upload-url", verifyAccessToken, videoController.createUploadUrl);  // Étape 1
+router.post("/register",verifyAccessToken, videoController.registerVideo);      // Étape 2
 
 // 🟢 CRUD
-router.get("/", videoController.getVideos);
-router.get("/:id", videoController.getVideoById);
-router.delete("/:id", videoController.deleteVideo);
-router.patch("/:id/toggle", videoController.toggleActive);
-router.patch("/:id", videoController.updateVideoById); // ✅ nouvelle route
-router.get("/:vimeoId/download", videoController.downloadVideo);
+router.get("/", verifyAccessToken, videoController.getVideos);
+router.get("/public",verifyAccessToken, videoController.getPublicVideos);
+
+router.get("/:id",verifyAccessToken, videoController.getVideoById);
+router.delete("/:id",verifyAccessToken, videoController.deleteVideo);
+router.patch("/:id/toggle",verifyAccessToken, videoController.toggleActive);
+router.patch("/:id",verifyAccessToken, videoController.updateVideoById); // ✅ nouvelle route
+router.get("/:vimeoId/download",verifyAccessToken, videoController.downloadVideo);
 
 
 // 📥 Infos directes Vimeo
-router.get("/vimeo/:vimeoId", videoController.getVimeoInfo);
+router.get("/vimeo/:vimeoId",verifyAccessToken, videoController.getVimeoInfo);
 
 module.exports = router;

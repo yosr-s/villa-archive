@@ -82,16 +82,6 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
   /** 🟠 Aucun wideo */
   if (sortedVideos.length === 0) {
     return (
-      // <div className="luxury-card p-12 text-center">
-      //   <h2 className="font-luxury text-2xl font-semibold text-luxury-darkGrey mb-4">
-      //     Brak wideo
-      //   </h2>
-      //   <p className="text-luxury-grey">
-      //     {isAdmin
-      //       ? "Dodaj swoje pierwsze wideo, aby rozpocząć archiwum."
-      //       : "Brak dostępnych publicznych nagrań wideo."}
-      //   </p>
-      // </div>
      <div className="luxury-card p-12 text-center border border-[#bfbfbf] bg-[#e6e6e6] shadow-sm shadow-gray-400/30 hover:shadow-gray-500/40 transition-all duration-500 rounded-2xl">
   <h2 className="font-luxury text-2xl font-semibold text-gray-800 mb-4 drop-shadow-[0_0_4px_rgba(80,80,80,0.1)]">
     Brak wideo
@@ -451,12 +441,24 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                         )}
                       </span>
 
-                      <Switch
+                      {/* <Switch
                         checked={!video.isPrivate}
                         onCheckedChange={(checked) =>
                           handleToggleVisibility(video._id, !checked)
                         }
-                      />
+                      /> */}
+                      <Switch
+  checked={!video.isPrivate}
+  onCheckedChange={(checked) =>
+    handleToggleVisibility(video._id, !checked)
+  }
+  className={`
+    relative inline-flex h-6 w-11 items-center rounded-full border transition-all duration-300
+    data-[state=checked]:bg-[#333333] data-[state=checked]:border-[#1a1a1a] data-[state=checked]:shadow-[0_0_6px_rgba(0,0,0,0.4)]
+    data-[state=unchecked]:bg-[#999999] data-[state=unchecked]:border-[#666666] data-[state=unchecked]:shadow-inner
+  `}
+/>
+
                     </div>
                   </div>
                 )}

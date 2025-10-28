@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+import api from "./interceptors/axios.interceptor";
 
 /**
  * 🎥 Service de gestion des vidéos (Upload Vimeo + CRUD MongoDB)
@@ -15,7 +16,7 @@ export const videoService = {
    */
   async createUploadUrl(title: string, description: string, size: number, isPrivate: boolean) {
     try {
-      const res = await axios.post(`${API_BASE_URL}/videos/upload-url`, {
+      const res = await api.post(`${API_BASE_URL}/videos/upload-url`, {
         title,
         description,
         size,
@@ -87,7 +88,7 @@ export const videoService = {
     isPrivate?: boolean;
   }) {
     try {
-      const res = await axios.post(`${API_BASE_URL}/videos/register`, videoData);
+      const res = await api.post(`${API_BASE_URL}/videos/register`, videoData);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur enregistrement MongoDB :", error.response?.data || error.message);
@@ -100,7 +101,17 @@ export const videoService = {
    */
   async getVideos() {
     try {
-      const res = await axios.get(`${API_BASE_URL}/videos`);
+      const res = await api.get(`${API_BASE_URL}/videos`);
+      return res.data;
+    } catch (error: any) {
+      console.error("❌ Erreur récupération vidéos :", error.response?.data || error.message);
+      throw error.response?.data || { message: "Erreur récupération vidéos" };
+    }
+  },
+  //! get public
+    async getPublicVideos() {
+    try {
+      const res = await api.get(`${API_BASE_URL}/videos/public`);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur récupération vidéos :", error.response?.data || error.message);
@@ -113,7 +124,7 @@ export const videoService = {
    */
   async getVideoById(id: string) {
     try {
-      const res = await axios.get(`${API_BASE_URL}/videos/${id}`);
+      const res = await api.get(`${API_BASE_URL}/videos/${id}`);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur récupération vidéo :", error.response?.data || error.message);
@@ -126,7 +137,7 @@ export const videoService = {
    */
   async deleteVideo(id: string) {
     try {
-      const res = await axios.delete(`${API_BASE_URL}/videos/${id}`);
+      const res = await api.delete(`${API_BASE_URL}/videos/${id}`);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur suppression vidéo :", error.response?.data || error.message);
@@ -139,7 +150,7 @@ export const videoService = {
    */
   async toggleActive(id: string) {
     try {
-      const res = await axios.patch(`${API_BASE_URL}/videos/${id}/toggle`);
+      const res = await api.patch(`${API_BASE_URL}/videos/${id}/toggle`);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur toggle visibilité :", error.response?.data || error.message);
@@ -152,7 +163,7 @@ export const videoService = {
    */
   async getVimeoInfo(vimeoId: string) {
     try {
-      const res = await axios.get(`${API_BASE_URL}/videos/vimeo/${vimeoId}`);
+      const res = await api.get(`${API_BASE_URL}/videos/vimeo/${vimeoId}`);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur récupération Vimeo info :", error.response?.data || error.message);
@@ -169,7 +180,7 @@ export const videoService = {
     isPrivate?: boolean;
   }) {
     try {
-      const res = await axios.patch(`${API_BASE_URL}/videos/${id}`, updates);
+      const res = await api.patch(`${API_BASE_URL}/videos/${id}`, updates);
       return res.data;
     } catch (error: any) {
       console.error("❌ Erreur update vidéo :", error.response?.data || error.message);
@@ -183,7 +194,7 @@ export const videoService = {
    */
   async downloadVideo(vimeoId: string) {
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `${API_BASE_URL}/videos/${vimeoId}/download`,
         {
           responseType: "blob", // 🎥 important pour gérer le binaire

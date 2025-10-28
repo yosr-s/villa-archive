@@ -12,7 +12,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string, role: "admin" | "visitor") => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -28,18 +28,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * 📦 Restaure la session depuis le localStorage
+   */
   useEffect(() => {
     const savedUser = localStorage.getItem("villa-user");
-    if (savedUser) setUser(JSON.parse(savedUser));
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
     setIsLoading(false);
   }, []);
 
   /**
-   * 🔐 Authentification dynamique selon le rôle
+   * 🔐 Connexion selon le rôle
    */
-  const login = async (email: string, password: string, role: "admin" | "visitor"): Promise<boolean> => {
+  const login = async (
+    email: string,
+    password: string,
+    role: "admin" | "visitor"
+  ): Promise<boolean> => {
     try {
-      let response;
+      let response: any;
 
       if (role === "admin") {
         response = await adminService.login(email, password);
@@ -47,23 +56,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         response = await visitorService.login(email, password);
       }
 
-      if (response?.token) {
+      // ✅ Nouveau format unifié
+      const accessToken = response?.accessToken;
+      const refreshToken = response?.refreshToken;
+      const profile =
+        role === "admin" ? response.admin : response.visitor || response.user;
+
+      if (accessToken && refreshToken) {
         const userData: User = {
-          id: response.user?._id || `${role}-${Date.now()}`,
-          email: response.user?.email || email,
+          id: profile?.id || `${role}-${Date.now()}`,
+          email: profile?.email || email,
           role,
-          token: response.token,
+          token: accessToken,
         };
 
+        // Sauvegarde
         localStorage.setItem("villa-user", JSON.stringify(userData));
-        localStorage.setItem(`${role}Token`, response.token);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
         setUser(userData);
         return true;
       }
 
       return false;
     } catch (error) {
-      console.error("Erreur de connexion :", error);
+      console.error("❌ Erreur de connexion :", error);
       return false;
     }
   };
@@ -71,21 +89,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   /**
    * 🚪 Déconnexion globale
    */
-const logout = async () => {
+  const logout = async () => {
     try {
       if (user?.role === "admin") {
         await adminService.logout();
       } else if (user?.role === "visitor") {
         await visitorService.logout();
       }
-
+    } catch (error) {
+      console.warn("⚠️ Erreur logout :", error);
+    } finally {
       setUser(null);
       localStorage.removeItem("villa-user");
-    } catch (error) {
-      console.error("Erreur logout :", error);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     }
   };
-
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isLoading }}>

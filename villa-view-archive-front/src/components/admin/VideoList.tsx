@@ -350,7 +350,7 @@ const VideoList: React.FC = () => {
     //     </div>
     //   )}
     // </div>
-   <div className="luxury-card bg-[#e6e6e6] border border-[#bfbfbf] rounded-2xl p-8 text-gray-800 shadow-sm shadow-gray-400/30">
+<div className="luxury-card bg-[#e6e6e6] border border-[#bfbfbf] rounded-2xl p-8 text-gray-800 shadow-sm shadow-gray-400/30">
   {/* 🏷️ Header */}
   <div className="mb-8">
     <h2 className="font-luxury text-3xl font-semibold text-gray-800 mb-2">
@@ -421,7 +421,13 @@ const VideoList: React.FC = () => {
                   onCheckedChange={(checked) =>
                     handleToggleVisibility(video._id, !checked)
                   }
+                  className={`
+                    relative inline-flex h-6 w-11 items-center rounded-full border transition-all duration-300
+                    data-[state=checked]:bg-[#333333] data-[state=checked]:border-[#1a1a1a] data-[state=checked]:shadow-[0_0_6px_rgba(0,0,0,0.4)]
+                    data-[state=unchecked]:bg-[#999999] data-[state=unchecked]:border-[#666666] data-[state=unchecked]:shadow-inner
+                  `}
                 />
+
                 <span className="flex items-center space-x-1 text-sm">
                   {!video.isPrivate ? (
                     <>
@@ -500,7 +506,13 @@ const VideoList: React.FC = () => {
                 onCheckedChange={(checked) =>
                   handleToggleVisibility(video._id, !checked)
                 }
+                className={`
+                  relative inline-flex h-6 w-11 items-center rounded-full border transition-all duration-300
+                  data-[state=checked]:bg-[#333333] data-[state=checked]:border-[#1a1a1a] data-[state=checked]:shadow-[0_0_6px_rgba(0,0,0,0.4)]
+                  data-[state=unchecked]:bg-[#999999] data-[state=unchecked]:border-[#666666] data-[state=unchecked]:shadow-inner
+                `}
               />
+
               {!video.isPrivate ? (
                 <Globe className="w-4 h-4 text-green-600" />
               ) : (
@@ -590,6 +602,11 @@ const VideoList: React.FC = () => {
             onCheckedChange={(checked) =>
               setEditData((prev) => ({ ...prev, isPrivate: !checked }))
             }
+            className={`
+              relative inline-flex h-6 w-11 items-center rounded-full border transition-all duration-300
+              data-[state=checked]:bg-[#333333] data-[state=checked]:border-[#1a1a1a] data-[state=checked]:shadow-[0_0_6px_rgba(0,0,0,0.4)]
+              data-[state=unchecked]:bg-[#999999] data-[state=unchecked]:border-[#666666] data-[state=unchecked]:shadow-inner
+            `}
           />
           <span className="text-sm text-gray-700">
             {editData.isPrivate ? "Prywatne" : "Publiczne"}
@@ -615,6 +632,7 @@ const VideoList: React.FC = () => {
     </div>
   )}
 </div>
+
 
 
   );

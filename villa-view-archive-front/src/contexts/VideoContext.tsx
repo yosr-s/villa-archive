@@ -5,6 +5,8 @@ import { toast } from "@/hooks/use-toast";
 
 interface VideoContextType {
   videos: Video[];
+  fetchVideos: () => Promise<void>; 
+  fetchPublicVideos: () => Promise<void>; 
   addVideo: (video: Omit<Video, "_id" | "createdAt" | "updatedAt">) => Promise<void>;
   updateVideo: (id: string, updates?: Partial<Video>) => Promise<void>;
   deleteVideo: (id: string) => Promise<void>;
@@ -26,22 +28,64 @@ export const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   /* -------------------------------------------------------------------------- */
   /* 🟢 Charger les vidéos depuis MongoDB au montage                            */
   /* -------------------------------------------------------------------------- */
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await videoService.getVideos();
-        setVideos(data);
-      } catch (err) {
-        console.error("Erreur chargement vidéos :", err);
-        toast({
-          title: "Błąd ładowania",
-          description: "Nie udało się załadować listy wideo.",
-          variant: "destructive",
-        });
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const data = await videoService.getVideos();
+  //       setVideos(data);
+  //     } catch (err) {
+  //       console.error("Erreur chargement vidéos :", err);
+  //       toast({
+  //         title: "Błąd ładowania",
+  //         description: "Nie udało się załadować listy wideo.",
+  //         variant: "destructive",
+  //       });
+  //     }
+  //   })();
+  // }, []);
 
+
+  /* -------------------------------------------------------------------------- */
+  /* 🧩 Fonction publique : chargement manuel des vidéos après login            */
+  /* -------------------------------------------------------------------------- */
+  const fetchVideos = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      console.warn("⚠️ Pas de token — skip fetchVideos()");
+      return;
+    }
+
+    try {
+      const data = await videoService.getVideos();
+      setVideos(data);
+    } catch (err) {
+      console.error("Erreur chargement vidéos :", err);
+      toast({
+        title: "Błąd ładowania",
+        description: "Nie udało się załadować listy wideo.",
+        variant: "destructive",
+      });
+    }
+  };
+    const fetchPublicVideos = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      console.warn("⚠️ Pas de token — skip fetchVideos()");
+      return;
+    }
+
+    try {
+      const data = await videoService.getPublicVideos();
+      setVideos(data);
+    } catch (err) {
+      console.error("Erreur chargement vidéos :", err);
+      toast({
+        title: "Błąd ładowania",
+        description: "Nie udało się załadować listy wideo.",
+        variant: "destructive",
+      });
+    }
+  };
   /* -------------------------------------------------------------------------- */
   /* ➕ Ajouter une vidéo (via backend → MongoDB)                                */
   /* -------------------------------------------------------------------------- */
@@ -149,7 +193,7 @@ export const VideoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return (
     <VideoContext.Provider
-      value={{ videos, addVideo, updateVideo, deleteVideo,downloadVideo, getPublicVideos }}
+      value={{ videos, addVideo, updateVideo, deleteVideo,downloadVideo, getPublicVideos,  fetchVideos ,fetchPublicVideos}}
     >
       {children}
     </VideoContext.Provider>

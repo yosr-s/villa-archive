@@ -292,6 +292,15 @@ exports.getVideos = async (req, res) => {
     res.status(500).json({ message: "Erreur récupération vidéos" });
   }
 };
+
+exports.getPublicVideos = async (req, res) => {
+  try {
+    const videos = await Video.find({ isPrivate: false }).sort({ creationDate: -1 });
+    res.json(videos);
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
 // 🔍 Récupérer une vidéo par ID Mongo
 exports.getVideoById = async (req, res) => {
   try {
