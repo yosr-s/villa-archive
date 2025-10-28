@@ -92,11 +92,11 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
       //       : "Brak dostępnych publicznych nagrań wideo."}
       //   </p>
       // </div>
-      <div className="luxury-card p-12 text-center border border-gray-700/60 bg-[#111] shadow-md shadow-gray-800/40 hover:shadow-gray-500/20 transition-all duration-500 rounded-2xl">
-  <h2 className="font-luxury text-2xl font-semibold text-gray-100 mb-4 drop-shadow-[0_0_8px_rgba(200,200,200,0.15)]">
+     <div className="luxury-card p-12 text-center border border-[#bfbfbf] bg-[#e6e6e6] shadow-sm shadow-gray-400/30 hover:shadow-gray-500/40 transition-all duration-500 rounded-2xl">
+  <h2 className="font-luxury text-2xl font-semibold text-gray-800 mb-4 drop-shadow-[0_0_4px_rgba(80,80,80,0.1)]">
     Brak wideo
   </h2>
-  <p className="text-gray-400 tracking-wide">
+  <p className="text-gray-600 tracking-wide">
     {isAdmin
       ? "Dodaj swoje pierwsze wideo, aby rozpocząć archiwum."
       : "Brak dostępnych publicznych nagrań wideo."}
@@ -341,8 +341,8 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
 //       )}
 //     </div>
 
-<div className="relative bg-[#0b0b0b] min-h-screen text-gray-100 font-sans">
-  {/* 🏷️ Titre (désactivé pour l’harmonisation avec le header du dashboard) */}
+<div className="relative bg-[#d9d9d9] min-h-screen text-gray-800 font-sans">
+  {/* Titre (désactivé) */}
   <div className="mb-12 text-center">
     <motion.h1
       initial={{ opacity: 0, y: 20 }}
@@ -353,8 +353,8 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
 
   {/* 📜 Timeline */}
   <div ref={contentRef} className="relative max-w-6xl mx-auto px-4 md:px-0">
-    {/* Ligne centrale */}
-    <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-[1px] bg-gradient-to-b from-gray-800 via-gray-600 to-gray-800 h-full z-0" />
+    {/* Ligne centrale plus foncée */}
+    <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-[#8c8c8c] via-[#7a7a7a] to-[#8c8c8c] h-full z-0" />
 
     {/* Items */}
     <div className="flex flex-col space-y-24">
@@ -371,7 +371,7 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
           >
             {/* Point timeline */}
             <div className="hidden md:block absolute left-1/2 -translate-x-1/2 z-10">
-              <div className="w-4 h-4 bg-gray-500 rounded-full border-[3px] border-[#0b0b0b] shadow-lg shadow-gray-700/30"></div>
+              <div className="w-4 h-4 bg-[#7a7a7a] rounded-full border-[3px] border-[#d9d9d9] shadow-md shadow-gray-500/30"></div>
             </div>
 
             {/* Date bubble */}
@@ -382,8 +382,8 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                   : "left-[calc(50%+0.8rem)]"
               }`}
             >
-              <div className="flex items-center bg-[#1a1a1a]/80 text-gray-300 px-3 py-1 rounded-full text-xs font-medium border border-gray-700 backdrop-blur-md shadow-md">
-                <Calendar className="w-3 h-3 mr-1 text-gray-400" />
+              <div className="flex items-center bg-[#ececec]/80 text-gray-700 px-3 py-1 rounded-full text-xs font-medium border border-gray-500 backdrop-blur-md shadow-sm">
+                <Calendar className="w-3 h-3 mr-1 text-gray-600" />
                 <span>{videoDate}</span>
               </div>
             </div>
@@ -394,60 +394,59 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                 isLeft ? "md:pr-10" : "md:pl-10"
               }`}
             >
-              <div className="group relative bg-[#121212] border border-gray-800 rounded-xl p-6 transition-transform duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg hover:shadow-gray-700/20">
-                {/* Copy / download buttons */}
+              <div className="group relative bg-[#e4e4e4] border border-gray-400 rounded-xl p-6 transition-transform duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md hover:shadow-gray-500/30">
+                {/* Boutons copier */}
                 <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-20">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleCopyEmbedUrl(video.shareUrl);
                     }}
-                    className="rounded-full bg-gray-800 hover:bg-gray-700 text-gray-200 px-2 py-1 flex items-center gap-1 text-xs border border-gray-600"
+                    className="rounded-full bg-[#d9d9d9] hover:bg-[#d0d0d0] text-gray-700 px-2 py-1 flex items-center gap-1 text-xs border border-gray-500"
                     title="Kopiuj link Vimeo"
                   >
-                    <Copy className="w-3.5 h-3.5 text-gray-400" />
+                    <Copy className="w-3.5 h-3.5 text-gray-600" />
                     Kopiuj
                   </button>
                 </div>
 
-                {/* Miniature */}
-               <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video">
-  <img
-    src={video.thumbnail}
-    alt={video.title}
-    className="absolute inset-0 w-full h-full object-cover object-center scale-110 transition-transform duration-500 group-hover:scale-110 brightness-95 group-hover:brightness-100"
-    onClick={() => setSelectedVideo(video)}
-  />
-  <div
-    className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-    onClick={() => setSelectedVideo(video)}
-  >
-    <Play className="w-12 h-12 text-white drop-shadow-md" />
-  </div>
-</div>
+                {/* 📸 Miniature avec zoom */}
+                <div className="relative mb-4 overflow-hidden rounded-lg group cursor-pointer aspect-video border border-gray-400/50">
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="absolute inset-0 w-full h-full object-cover object-center scale-125 transition-transform duration-700 group-hover:scale-[1.35] brightness-[1.03]"
+                    onClick={() => setSelectedVideo(video)}
+                  />
+                  <div
+                    className="absolute inset-0 bg-gray-700/25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    onClick={() => setSelectedVideo(video)}
+                  >
+                    <Play className="w-12 h-12 text-gray-100 drop-shadow-sm" />
+                  </div>
+                </div>
 
-
-                {/* Title */}
+                {/* Titre */}
                 <div className="text-center mt-2">
-                  <h3 className="font-medium text-lg text-gray-100">
+                  <h3 className="font-medium text-lg text-gray-800">
                     {video.title}
                   </h3>
                 </div>
 
-                {/* Visibility toggle for admin */}
+                {/* Toggle visibilité admin */}
                 {isAdmin && (
                   <div className="py-4 px-2">
                     <div className="flex items-center justify-between w-full">
                       <span className="flex items-center space-x-1 text-sm">
                         {video.isPrivate ? (
                           <>
-                            <Lock className="w-4 h-4 text-yellow-500" />
-                            <span className="text-yellow-500">Prywatne</span>
+                            <Lock className="w-4 h-4 text-yellow-600" />
+                            <span className="text-yellow-600">Prywatne</span>
                           </>
                         ) : (
                           <>
-                            <Globe className="w-4 h-4 text-green-400" />
-                            <span className="text-green-400">Publiczne</span>
+                            <Globe className="w-4 h-4 text-green-600" />
+                            <span className="text-green-600">Publiczne</span>
                           </>
                         )}
                       </span>
@@ -478,6 +477,9 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
     />
   )}
 </div>
+
+
+
 
 
   );

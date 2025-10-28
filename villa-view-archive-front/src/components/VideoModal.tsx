@@ -129,26 +129,26 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
 //         </div>
 //       </div>
 //     </div>
-<div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-  <div className="bg-[#121212] border border-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl relative text-gray-200">
+<div className="fixed inset-0 bg-[#d9d9d9]/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+  <div className="bg-[#f0f0f0] border border-[#bfbfbf] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-xl shadow-gray-400/40 relative text-gray-800">
     {/* Header */}
-    <div className="flex items-center justify-between p-6 border-b border-gray-800">
-      <h2 className="font-luxury text-2xl font-semibold text-gray-100 truncate">
+    <div className="flex items-center justify-between p-6 border-b border-[#bfbfbf] bg-[#e6e6e6]">
+      <h2 className="font-luxury text-2xl font-semibold text-gray-800 truncate">
         {video.title}
       </h2>
       <button
         onClick={onClose}
-        className="p-2 rounded-lg transition-colors hover:bg-gray-800"
+        className="p-2 rounded-lg transition-colors hover:bg-[#d0d0d0]"
         aria-label="Close modal"
       >
-        <X className="w-6 h-6 text-gray-400 hover:text-gray-200" />
+        <X className="w-6 h-6 text-gray-600 hover:text-gray-800" />
       </button>
     </div>
 
     {/* Content */}
     <div className="p-6">
       {/* 🎥 Player */}
-      <div className="relative bg-black rounded-lg mb-6 aspect-video overflow-hidden border border-gray-700">
+      <div className="relative bg-black rounded-lg mb-6 aspect-video overflow-hidden border border-[#bfbfbf]">
         {video.embedUrl ? (
           <iframe
             src={video.embedUrl}
@@ -158,7 +158,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
             className="w-full h-full"
           />
         ) : (
-          <p className="text-gray-400 text-center py-10">
+          <p className="text-gray-600 text-center py-10">
             Nie znaleziono adresu wideo Vimeo.
           </p>
         )}
@@ -168,15 +168,17 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
       <div className="space-y-4">
         {video.description && (
           <div>
-            <h3 className="font-semibold text-gray-100 mb-2">Opis</h3>
-            <p className="text-gray-400 leading-relaxed">{video.description}</p>
+            <h3 className="font-semibold text-gray-800 mb-2">Opis</h3>
+            <p className="text-gray-700 leading-relaxed">
+              {video.description}
+            </p>
           </div>
         )}
 
-        <div className="flex justify-between items-center pt-4 border-t border-gray-800 text-sm text-gray-400">
+        <div className="flex justify-between items-center pt-4 border-t border-[#bfbfbf] text-sm text-gray-700">
           {/* 🗓️ Date à gauche */}
           <div className="flex items-center">
-            <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+            <Calendar className="w-4 h-4 mr-2 text-gray-600" />
             <span>
               Utworzono:{" "}
               {video.creationDate
@@ -189,12 +191,12 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
           <div className="flex items-center">
             {video.isPrivate ? (
               <>
-                <Lock className="w-4 h-4 mr-2 text-yellow-500" />
+                <Lock className="w-4 h-4 mr-2 text-yellow-600" />
                 <span>Wideo prywatne</span>
               </>
             ) : (
               <>
-                <Globe className="w-4 h-4 mr-2 text-green-400" />
+                <Globe className="w-4 h-4 mr-2 text-green-600" />
                 <span>Wideo publiczne</span>
               </>
             )}
@@ -204,12 +206,12 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
 
       {/* 🔗 Lien direct */}
       {video.shareUrl && (
-        <div className="mt-6 text-center border-t border-gray-800 pt-4">
+        <div className="mt-6 text-center border-t border-[#bfbfbf] pt-4">
           <a
             href={video.shareUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-orange-400 hover:text-orange-300 font-medium transition-colors"
+            className="text-[#e67300] hover:text-[#cc6600] font-medium transition-colors"
           >
             Otwórz w Vimeo ↗
           </a>
@@ -218,6 +220,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
     </div>
   </div>
 </div>
+
 
   );
 };

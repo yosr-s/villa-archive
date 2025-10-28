@@ -380,33 +380,33 @@ const handleSubmit = async (e: React.FormEvent) => {
 //       </div>
 //     </>
 <>
-  {/* 🌀 Loader full-screen */}
+  {/* 🌀 Loader clair et doux */}
   {isLoading && (
-    <div className="fixed inset-0 bg-black/70 flex flex-col items-center justify-center z-50 backdrop-blur-sm px-6">
-      <p className="text-gray-100 text-lg font-medium mb-4 tracking-wide">
+    <div className="fixed inset-0 bg-[#d9d9d9]/80 flex flex-col items-center justify-center z-50 backdrop-blur-sm px-6">
+      <p className="text-gray-700 text-lg font-medium mb-4 tracking-wide">
         Przesyłanie wideo: {progress}%
       </p>
 
-      <div className="w-72 bg-gray-800 rounded-full h-3 overflow-hidden shadow-inner border border-gray-700">
+      <div className="w-72 bg-gray-300 rounded-full h-3 overflow-hidden shadow-inner border border-gray-400">
         <div
-          className="bg-gradient-to-r from-gray-100 via-gray-300 to-gray-100 h-3 rounded-full transition-all duration-300"
+          className="bg-gradient-to-r from-[#bfbfbf] via-[#a6a6a6] to-[#bfbfbf] h-3 rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
 
-      <p className="text-gray-400 text-sm mt-3 italic">
+      <p className="text-gray-600 text-sm mt-3 italic">
         Nie zamykaj tej strony...
       </p>
     </div>
   )}
 
   {/* 📦 Main form */}
-  <div className="bg-[#121212] border border-gray-800 rounded-2xl p-8 shadow-lg shadow-black/30 text-gray-200">
+  <div className="bg-[#e6e6e6] border border-[#bfbfbf] rounded-2xl p-8 shadow-sm shadow-gray-400/30 text-gray-800">
     <div className="mb-8">
-      <h2 className="font-luxury text-3xl font-semibold text-gray-100 mb-2">
+      <h2 className="font-luxury text-3xl font-semibold text-gray-800 mb-2">
         Dodaj nowe wideo
       </h2>
-      <p className="text-gray-400">
+      <p className="text-gray-600">
         Prześlij plik wideo — zostanie automatycznie zapisany w archiwum.
       </p>
     </div>
@@ -417,7 +417,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         <div>
           <label
             htmlFor="title"
-            className="block text-sm font-medium text-gray-400 mb-2"
+            className="block text-sm font-medium text-gray-700 mb-2"
           >
             Tytuł wideo
           </label>
@@ -427,7 +427,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             type="text"
             value={formData.title}
             onChange={handleInputChange}
-            className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-500 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 outline-none transition"
+            className="w-full bg-[#f0f0f0] border border-[#bfbfbf] rounded-lg px-3 py-2 text-gray-800 placeholder-gray-500 focus:border-gray-600 focus:ring-1 focus:ring-gray-600 outline-none transition"
             placeholder="Wpisz tytuł wideo"
             required
           />
@@ -436,7 +436,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         <div>
           <label
             htmlFor="creationDate"
-            className="block text-sm font-medium text-gray-400 mb-2"
+            className="block text-sm font-medium text-gray-700 mb-2"
           >
             Data utworzenia
           </label>
@@ -446,7 +446,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             type="date"
             value={formData.creationDate}
             onChange={handleInputChange}
-            className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg px-3 py-2 text-gray-100 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 outline-none"
+            className="w-full bg-[#f0f0f0] border border-[#bfbfbf] rounded-lg px-3 py-2 text-gray-800 focus:border-gray-600 focus:ring-1 focus:ring-gray-600 outline-none"
           />
         </div>
       </div>
@@ -455,7 +455,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-400 mb-2"
+          className="block text-sm font-medium text-gray-700 mb-2"
         >
           Opis
         </label>
@@ -465,7 +465,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           value={formData.description}
           onChange={handleInputChange}
           rows={4}
-          className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg px-3 py-2 text-gray-100 resize-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 outline-none"
+          className="w-full bg-[#f0f0f0] border border-[#bfbfbf] rounded-lg px-3 py-2 text-gray-800 resize-none focus:border-gray-600 focus:ring-1 focus:ring-gray-600 outline-none"
           placeholder="Opisz zawartość wideo"
         />
       </div>
@@ -474,7 +474,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div>
         <label
           htmlFor="file"
-          className="block text-sm font-medium text-gray-400 mb-2"
+          className="block text-sm font-medium text-gray-700 mb-2"
         >
           Wybierz plik wideo
         </label>
@@ -484,14 +484,14 @@ const handleSubmit = async (e: React.FormEvent) => {
           type="file"
           accept="video/*"
           onChange={handleFileChange}
-          className="block w-full text-sm text-gray-300 bg-[#1a1a1a] border border-gray-700 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-gray-700 file:text-gray-100 hover:file:bg-gray-600 transition"
+          className="block w-full text-sm text-gray-700 bg-[#f0f0f0] border border-[#bfbfbf] rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#d0d0d0] file:text-gray-800 hover:file:bg-[#c2c2c2] transition"
           required
         />
       </div>
 
       {/* Public / Private */}
       <div className="flex items-center space-x-3 pt-2">
-        <span className="text-sm text-gray-300">
+        <span className="text-sm text-gray-700">
           Udostępnij publicznie (widoczne dla gości)
         </span>
 
@@ -507,8 +507,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           }
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
             !formData.isPrivate
-              ? "bg-gray-400 shadow-[0_0_8px_#999]"
-              : "bg-gray-700 shadow-inner"
+              ? "bg-[#bfbfbf] shadow-[0_0_6px_#a6a6a6]"
+              : "bg-[#d0d0d0] shadow-inner"
           }`}
         >
           <span
@@ -521,9 +521,9 @@ const handleSubmit = async (e: React.FormEvent) => {
 
       {/* Pasek postępu */}
       {progress > 0 && (
-        <div className="w-full bg-gray-800 rounded-full h-2 mt-4 overflow-hidden">
+        <div className="w-full bg-gray-300 rounded-full h-2 mt-4 overflow-hidden">
           <div
-            className="bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 h-2 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-[#bfbfbf] via-[#a6a6a6] to-[#bfbfbf] h-2 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -534,7 +534,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-gray-100 text-gray-900 px-5 py-2 rounded-lg font-semibold hover:bg-gray-300 transition disabled:opacity-50 flex items-center space-x-2"
+          className="bg-[#cfcfcf] text-gray-900 px-5 py-2 rounded-lg font-semibold hover:bg-[#bfbfbf] transition disabled:opacity-50 flex items-center space-x-2"
         >
           <Upload className="w-4 h-4" />
           <span>{isLoading ? "Przesyłanie..." : "Prześlij wideo"}</span>
@@ -543,6 +543,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     </form>
   </div>
 </>
+
 
   );
 };

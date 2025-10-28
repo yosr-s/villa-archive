@@ -122,62 +122,68 @@ const AdminDashboard = () => {
 //         </div>
 //       </div>
 //     </div>
-<div className="relative min-h-screen bg-[#0b0b0b] text-gray-200">
-  {/* Page content */}
-  <div className="relative z-10">
-    {/* Header */}
-    <header className="bg-luxury-dark/70 backdrop-blur-md border-b border-gray-800 shadow-md">
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <div>
-          <h1 className="font-luxury text-2xl font-semibold text-gray-100">
-            Panel administracyjny
-          </h1>
-          <p className="text-gray-400 text-sm">
-            Zarządzaj swoim archiwum wideo
-          </p>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center space-x-2 text-gray-400 hover:text-gray-100 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Wyloguj się</span>
-        </button>
-      </div>
-    </header>
 
-    {/* Main content */}
-    <div className="container mx-auto px-6 py-10">
-      {/* Navigation */}
-      <nav className="mb-10">
-        <div className="flex flex-wrap gap-4">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                isActive(item.href)
-                  ? "bg-luxury-dark border border-gray-500/40 text-white shadow-lg shadow-gray-400/20"
-                  : "bg-luxury-darker text-gray-400 border border-gray-800 hover:text-gray-100 hover:border-gray-600 hover:bg-luxury-dark/70"
-              }`}
+
+<div className="relative min-h-screen bg-[#d9d9d9] text-gray-800">
+      {/* 🩶 fond popiel clair */}
+
+      {/* --- Page Content --- */}
+      <div className="relative z-10">
+        {/* --- Header --- */}
+        <header className="bg-[#e6e6e6]/90 backdrop-blur-md border-b border-gray-400 shadow-sm">
+          <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div>
+              <h1 className="font-luxury text-2xl font-semibold text-gray-900">
+                Panel administracyjny
+              </h1>
+              <p className="text-gray-600 text-sm">
+                Zarządzaj swoim archiwum wideo
+              </p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              <item.icon className="w-4 h-4" />
-              <span>{item.name}</span>
-            </Link>
-          ))}
-        </div>
-      </nav>
+              <LogOut className="w-4 h-4" />
+              <span>Wyloguj się</span>
+            </button>
+          </div>
+        </header>
 
-      {/* Routes */}
-      <Routes>
-        <Route path="/" element={<AddVideo />} />
-        <Route path="/add-video" element={<AddVideo />} />
-        <Route path="/video-list" element={<VideoList />} />
-        <Route path="/explore" element={<ExploreArchive isAdmin={true} />} />
-      </Routes>
+        {/* --- Main content --- */}
+        <div className="container mx-auto px-6 py-10">
+          {/* --- Navigation --- */}
+          <nav className="mb-10">
+            <div className="flex flex-wrap gap-4">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                    isActive(item.href)
+                      ? "bg-[#c2c2c2] border border-gray-500 text-gray-900 shadow-md shadow-gray-400/40"
+                      : "bg-[#e0e0e0] text-gray-600 border border-gray-400 hover:text-gray-900 hover:border-gray-500 hover:bg-[#d0d0d0]"
+                  }`}
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.name}</span>
+                </Link>
+              ))}
+            </div>
+          </nav>
+
+          {/* --- Routes --- */}
+          {/* <div className="bg-[#e6e6e6] border border-gray-400 rounded-xl p-6 shadow-sm shadow-gray-500/20"> */}
+
+            <Routes>
+              <Route path="/" element={<AddVideo />} />
+              <Route path="/add-video" element={<AddVideo />} />
+              <Route path="/video-list" element={<VideoList />} />
+              <Route path="/explore" element={<ExploreArchive isAdmin={true} />} />
+            </Routes>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
   );
 };

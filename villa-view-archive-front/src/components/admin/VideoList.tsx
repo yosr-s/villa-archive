@@ -350,24 +350,24 @@ const VideoList: React.FC = () => {
     //     </div>
     //   )}
     // </div>
-    <div className="luxury-card bg-[#121212] border border-gray-800 rounded-2xl p-8 text-gray-200 shadow-lg shadow-black/30">
+   <div className="luxury-card bg-[#e6e6e6] border border-[#bfbfbf] rounded-2xl p-8 text-gray-800 shadow-sm shadow-gray-400/30">
   {/* 🏷️ Header */}
   <div className="mb-8">
-    <h2 className="font-luxury text-3xl font-semibold text-gray-100 mb-2">
+    <h2 className="font-luxury text-3xl font-semibold text-gray-800 mb-2">
       Lista wideo
     </h2>
-    <p className="text-gray-400">Zarządzaj filmami w swoim archiwum.</p>
+    <p className="text-gray-600">Zarządzaj filmami w swoim archiwum.</p>
   </div>
 
   {/* 🖥️ Table desktop */}
   <div className="overflow-x-auto">
     <table className="w-full hidden md:table">
       <thead>
-        <tr className="border-b border-gray-700">
+        <tr className="border-b border-[#bfbfbf] bg-[#f0f0f0]">
           {["Podgląd", "Szczegóły", "Widoczność", "Akcje"].map((h) => (
             <th
               key={h}
-              className="text-left py-4 px-2 font-medium text-gray-300 uppercase tracking-wide text-xs"
+              className="text-left py-4 px-2 font-medium text-gray-700 uppercase tracking-wide text-xs"
             >
               {h}
             </th>
@@ -379,7 +379,7 @@ const VideoList: React.FC = () => {
         {videos.map((video) => (
           <tr
             key={video._id}
-            className="border-b border-gray-800 hover:bg-[#1a1a1a]/60 transition-colors"
+            className="border-b border-[#d0d0d0] hover:bg-[#f4f4f4] transition-colors"
           >
             {/* Miniature + titre */}
             <td className="py-4 px-2">
@@ -390,13 +390,11 @@ const VideoList: React.FC = () => {
                     "https://via.placeholder.com/120x80?text=No+Thumbnail"
                   }
                   alt={video.title}
-                  className="w-20 h-16 object-cover rounded-lg scale-105 hover:scale-110 transition-transform duration-500"
+                  className="w-20 h-16 object-cover rounded-lg scale-105 hover:scale-110 transition-transform duration-500 border border-[#bfbfbf]"
                 />
                 <div>
-                  <h3 className="font-semibold text-gray-100">
-                    {video.title}
-                  </h3>
-                  <p className="text-sm text-gray-400 mt-1">
+                  <h3 className="font-semibold text-gray-800">{video.title}</h3>
+                  <p className="text-sm text-gray-600 mt-1">
                     {video.description
                       ? video.description.length > 60
                         ? `${video.description.substring(0, 60)}...`
@@ -408,9 +406,9 @@ const VideoList: React.FC = () => {
             </td>
 
             {/* Détails */}
-            <td className="py-4 px-2 text-sm text-gray-300">
+            <td className="py-4 px-2 text-sm text-gray-700">
               <p>
-                <strong className="text-gray-400">Utworzono:</strong>{" "}
+                <strong className="text-gray-600">Utworzono:</strong>{" "}
                 {new Date(video.creationDate).toLocaleDateString("pl-PL")}
               </p>
             </td>
@@ -427,13 +425,13 @@ const VideoList: React.FC = () => {
                 <span className="flex items-center space-x-1 text-sm">
                   {!video.isPrivate ? (
                     <>
-                      <Globe className="w-4 h-4 text-green-400" />
-                      <span className="text-green-400">Publiczne</span>
+                      <Globe className="w-4 h-4 text-green-600" />
+                      <span className="text-green-600">Publiczne</span>
                     </>
                   ) : (
                     <>
-                      <Lock className="w-4 h-4 text-yellow-500" />
-                      <span className="text-yellow-500">Prywatne</span>
+                      <Lock className="w-4 h-4 text-yellow-600" />
+                      <span className="text-yellow-600">Prywatne</span>
                     </>
                   )}
                 </span>
@@ -444,14 +442,14 @@ const VideoList: React.FC = () => {
             <td className="py-4 px-2 flex space-x-3">
               <button
                 onClick={() => openEditModal(video)}
-                className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-900/30 transition-colors"
+                className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-100 transition-colors"
                 title="Edytuj wideo"
               >
                 <Pencil className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleDelete(video._id, video.title)}
-                className="text-red-500 hover:text-red-400 p-2 rounded-lg hover:bg-red-900/30 transition-colors"
+                className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-100 transition-colors"
                 title="Usuń wideo"
               >
                 <Trash2 className="w-4 h-4" />
@@ -467,7 +465,7 @@ const VideoList: React.FC = () => {
       {videos.map((video) => (
         <div
           key={video._id}
-          className="p-4 border border-gray-800 rounded-xl bg-[#181818] shadow-md hover:shadow-gray-900/30 transition-all duration-300"
+          className="p-4 border border-[#bfbfbf] rounded-xl bg-[#f0f0f0] shadow-sm hover:shadow-md transition-all duration-300"
         >
           <div className="flex items-center space-x-3 mb-3">
             <img
@@ -476,11 +474,11 @@ const VideoList: React.FC = () => {
                 "https://via.placeholder.com/100x70?text=No+Thumbnail"
               }
               alt={video.title}
-              className="w-24 h-16 object-cover rounded-md scale-105 hover:scale-110 transition-transform duration-500"
+              className="w-24 h-16 object-cover rounded-md scale-105 hover:scale-110 transition-transform duration-500 border border-[#bfbfbf]"
             />
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-100">{video.title}</h3>
-              <p className="text-xs text-gray-400 mt-1">
+              <h3 className="font-semibold text-gray-800">{video.title}</h3>
+              <p className="text-xs text-gray-600 mt-1">
                 {video.description
                   ? video.description.length > 60
                     ? `${video.description.substring(0, 60)}...`
@@ -490,9 +488,9 @@ const VideoList: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex justify-between items-center mb-2 text-gray-300">
+          <div className="flex justify-between items-center mb-2 text-gray-700">
             <p className="text-sm">
-              <strong className="text-gray-400">Utworzono:</strong>{" "}
+              <strong className="text-gray-600">Utworzono:</strong>{" "}
               {new Date(video.creationDate).toLocaleDateString("pl-PL")}
             </p>
 
@@ -504,9 +502,9 @@ const VideoList: React.FC = () => {
                 }
               />
               {!video.isPrivate ? (
-                <Globe className="w-4 h-4 text-green-400" />
+                <Globe className="w-4 h-4 text-green-600" />
               ) : (
-                <Lock className="w-4 h-4 text-yellow-500" />
+                <Lock className="w-4 h-4 text-yellow-600" />
               )}
             </div>
           </div>
@@ -514,13 +512,13 @@ const VideoList: React.FC = () => {
           <div className="text-right space-x-2">
             <button
               onClick={() => openEditModal(video)}
-              className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-900/30 transition-colors"
+              className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-100 transition-colors"
             >
               <Pencil className="w-4 h-4" />
             </button>
             <button
               onClick={() => handleDelete(video._id, video.title)}
-              className="text-red-500 hover:text-red-400 p-2 rounded-lg hover:bg-red-900/30 transition-colors"
+              className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-100 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -532,18 +530,18 @@ const VideoList: React.FC = () => {
 
   {/* 🪟 Modal édition */}
   {editingVideo && (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
-      <div className="bg-[#1a1a1a] border border-gray-700 rounded-2xl shadow-2xl p-6 w-full max-w-md space-y-4 relative text-gray-200">
-        <h3 className="text-xl font-semibold text-gray-100 mb-2">
+    <div className="fixed inset-0 bg-[#d9d9d9]/80 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-[#f0f0f0] border border-[#bfbfbf] rounded-2xl shadow-xl p-6 w-full max-w-md space-y-4 relative text-gray-800">
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
           Edytuj wideo
         </h3>
 
         {/* Champ titre */}
         <div>
-          <label className="block text-sm mb-1 text-gray-400">Tytuł</label>
+          <label className="block text-sm mb-1 text-gray-700">Tytuł</label>
           <input
             type="text"
-            className="w-full bg-[#111] border border-gray-700 rounded-lg px-3 py-2 text-gray-100 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 outline-none"
+            className="w-full bg-[#ffffff] border border-[#bfbfbf] rounded-lg px-3 py-2 text-gray-800 focus:border-gray-600 focus:ring-1 focus:ring-gray-600 outline-none"
             value={editData.title}
             onChange={(e) =>
               setEditData((prev) => ({ ...prev, title: e.target.value }))
@@ -553,9 +551,9 @@ const VideoList: React.FC = () => {
 
         {/* Champ opis */}
         <div>
-          <label className="block text-sm mb-1 text-gray-400">Opis</label>
+          <label className="block text-sm mb-1 text-gray-700">Opis</label>
           <textarea
-            className="w-full bg-[#111] border border-gray-700 rounded-lg px-3 py-2 text-gray-100 resize-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 outline-none"
+            className="w-full bg-[#ffffff] border border-[#bfbfbf] rounded-lg px-3 py-2 text-gray-800 resize-none focus:border-gray-600 focus:ring-1 focus:ring-gray-600 outline-none"
             rows={3}
             value={editData.description}
             onChange={(e) =>
@@ -569,12 +567,12 @@ const VideoList: React.FC = () => {
 
         {/* Champ data */}
         <div>
-          <label className="block text-sm mb-1 text-gray-400">
+          <label className="block text-sm mb-1 text-gray-700">
             Data utworzenia
           </label>
           <input
             type="date"
-            className="w-full bg-[#111] border border-gray-700 rounded-lg px-3 py-2 text-gray-100 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 outline-none"
+            className="w-full bg-[#ffffff] border border-[#bfbfbf] rounded-lg px-3 py-2 text-gray-800 focus:border-gray-600 focus:ring-1 focus:ring-gray-600 outline-none"
             value={editData.creationDate}
             onChange={(e) =>
               setEditData((prev) => ({
@@ -593,7 +591,7 @@ const VideoList: React.FC = () => {
               setEditData((prev) => ({ ...prev, isPrivate: !checked }))
             }
           />
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-gray-700">
             {editData.isPrivate ? "Prywatne" : "Publiczne"}
           </span>
         </div>
@@ -602,13 +600,13 @@ const VideoList: React.FC = () => {
         <div className="flex justify-end space-x-3 pt-4">
           <button
             onClick={() => setEditingVideo(null)}
-            className="px-4 py-2 rounded-md border border-gray-700 text-gray-400 hover:bg-gray-800 transition"
+            className="px-4 py-2 rounded-md border border-[#bfbfbf] text-gray-700 hover:bg-[#e0e0e0] transition"
           >
             Anuluj
           </button>
           <button
             onClick={handleUpdate}
-            className="px-4 py-2 rounded-md bg-gray-100 text-gray-900 hover:bg-gray-300 transition font-semibold"
+            className="px-4 py-2 rounded-md bg-[#cfcfcf] text-gray-900 hover:bg-[#bfbfbf] transition font-semibold"
           >
             Zapisz zmiany
           </button>
@@ -617,6 +615,7 @@ const VideoList: React.FC = () => {
     </div>
   )}
 </div>
+
 
   );
 };
