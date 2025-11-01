@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
+import { ChevronDown } from "lucide-react";
 
 interface ExploreArchiveProps {
   isAdmin: boolean;
@@ -335,10 +336,39 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
   {/* 🏷️ Titre */}
   <div className="mb-12 text-center">
     <motion.h1
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.2, ease: "easeOut" }}
-    />
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        >
+          <h1
+            className="text-black"
+            style={{
+                  fontFamily: "Archivo",
+                  fontSize: "2.5rem",
+                  color: "#626161ff",
+                }}          >
+           Przewiń w dół 
+          </h1>
+         
+        </motion.h1>
+      {/* Triple arrow animation – tightly stacked */}
+      <div className="flex flex-col items-center mt-[2px] leading-none">
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            animate={{ y: [0, 6, 0] }}
+            transition={{
+              duration: 1.3,
+              delay: i * 0.12,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            style={{ marginTop: "-5px" }} // ← makes them very close
+          >
+            <ChevronDown size={22} color="#626161ff" strokeWidth={1.5} />
+          </motion.div>
+        ))}
+      </div>
   </div>
 
   {/* 📜 Timeline */}
@@ -393,20 +423,6 @@ const ExploreArchive: React.FC<ExploreArchiveProps> = ({ isAdmin }) => {
                   </div>
                 </div>
 
-                {/* Boutons copier */}
-                {/* <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 z-20">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopyEmbedUrl(video.embedUrl);
-                    }}
-                    className="rounded-full bg-[#d9d9d9] hover:bg-[#d0d0d0] text-gray-700 px-2 py-1 flex items-center gap-1 text-xs border border-gray-500"
-                    title="Kopiuj link Vimeo"
-                  >
-                    <Copy className="w-3.5 h-3.5 text-gray-600" />
-                    Kopiuj
-                  </button>
-                </div> */}
                 {/* Boutons copier */}
 <div
   className="

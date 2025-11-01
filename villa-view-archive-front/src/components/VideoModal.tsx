@@ -129,6 +129,8 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
 //         </div>
 //       </div>
 //     </div>
+
+
 <div className="fixed inset-0 bg-[#d9d9d9]/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
   <div className="bg-[#f0f0f0] border border-[#bfbfbf] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-xl shadow-gray-400/40 relative text-gray-800">
     {/* Header */}

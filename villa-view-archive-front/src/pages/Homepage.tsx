@@ -29,7 +29,7 @@ const Homepage = () => {
               <h1
                 style={{ fontFamily: "Archivo", fontSize: '2.6rem', color:'white' }}
               >
-                <span style={{color:'transparent'}}>l</span> From <span style={{color:'transparent'}}>H</span>the Garden<span style={{color:'transparent'}}>H</span> House
+                {/* <span style={{color:'transparent'}}>l</span> From <span style={{color:'transparent'}}>H</span>the Garden<span style={{color:'transparent'}}>H</span> House */}
              {/* <span style={{color:'transparent'}}>ffhhh</span>    Z <span style={{color:'transparent'}}>hghhg</span> domek  <span style={{color:'transparent'}}>lllldh</span>ogrodowy */}
 
               </h1>
@@ -100,7 +100,7 @@ const Homepage = () => {
         <div className="container mx-auto px-6 text-center">
           <p className="text-luxury-grey">
             {/* © 2025 Janusz Szychliński Luxury Villa Archive. All rights reserved. */}
-            © 2025 Janusz Szychliński archiwum domu. Wszelkie prawa zastrzeżone.
+            © 2025 Archiwum Domu. Wszelkie prawa zastrzeżone.
           </p>
         </div>
       </footer>
