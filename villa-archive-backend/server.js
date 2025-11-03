@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
+
 
 const adminRoutes = require('./routes/admin.router');
 const visitorRoutes = require('./routes/visitor.router');
@@ -22,6 +24,9 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/visitor', visitorRoutes);
 app.use('/api/videos', videoRoutes);
 
+// 🏗️ SERVIR LE FRONTEND (React build)
+const frontendPath = path.join(__dirname, 'public');
+app.use(express.static(frontendPath));
 
 
 // 🚀 Lancement serveur

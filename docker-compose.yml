@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:6
+    restart: always
+    container_name: villa-mongo
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  villa-app:
+    build: .
+    container_name: villa-archive
+    restart: always
+    ports:
+      - "80:4000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/villa_archive_db
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
