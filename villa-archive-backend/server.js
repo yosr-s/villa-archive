@@ -12,7 +12,13 @@ const videoRoutes = require('./routes/video.router');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
+// Express example
+app.use(cors({
+  origin: ['https://archiwumdomu.pl', 'https://www.archiwumdomu.pl'],
+  credentials: true
+}));
+
 
 // 🔗 Connexion MongoDB
 mongoose.connect(process.env.MONGO_URI)
