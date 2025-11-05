@@ -24,9 +24,13 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/visitor', visitorRoutes);
 app.use('/api/videos', videoRoutes);
 
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 // 🏗️ SERVIR LE FRONTEND (React build)
 const frontendPath = path.join(__dirname, 'public');
 app.use(express.static(frontendPath));
+
+
 
 
 // 🚀 Lancement serveur

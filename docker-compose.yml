@@ -1,26 +1,45 @@
-version: "3.9"
+version: '3.9'
 
 services:
   mongo:
     image: mongo:6
-    restart: always
     container_name: villa-mongo
-    volumes:
-      - mongo_data:/data/db
+    restart: always
+    command: ["mongod", "--auth", "--bind_ip_all", "--setParameter", "authenticationMechanisms=SCRAM-SHA-1"]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rootAdmin
+      - MONGO_INITDB_ROOT_PASSWORD=root123
+      - MONGO_INITDB_DATABASE=villa_archive_db
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
-  villa-app:
-    build: .
-    container_name: villa-archive
+  backend:
+    build: ./villa-archive-backend
+    container_name: villa-backend
     restart: always
-    ports:
-      - "80:4000"
+    env_file:
+      - ./villa-archive-backend/.env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/villa_archive_db
+      - MONGO_URI=mongodb://adminVilla:MotDePasseUltraSecurise@mongo:27017/villa_archive_db?authSource=villa_archive_db
       - NODE_ENV=production
+    ports:
+      - "4000:4000"
     depends_on:
       - mongo
+    volumes:
+      - ./villa-archive-backend/public/uploads:/app/public/uploads
+
+  frontend:
+    build: ./villa-view-archive-front
+    container_name: villa-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
   mongo_data:
