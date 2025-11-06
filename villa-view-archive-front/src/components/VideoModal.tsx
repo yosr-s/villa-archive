@@ -132,7 +132,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
 
 
 <div className="fixed inset-0 bg-[#d9d9d9]/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-  <div className="bg-[#f0f0f0] border border-[#bfbfbf] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-xl shadow-gray-400/40 relative text-gray-800">
+  <div className="bg-[#f0f0f0] border border-[#bfbfbf] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-xl shadow-gray-400/40 relative text-gray-800">
     {/* Header */}
     <div className="flex items-center justify-between p-6 border-b border-[#bfbfbf] bg-[#e6e6e6]">
       <h2 className="font-luxury text-2xl font-semibold text-gray-800 truncate">
@@ -148,7 +148,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, isOpen, onClose }) => {
     </div>
 
     {/* Content */}
-    <div className="p-6">
+    <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
       {/* 🎥 Player */}
       <div className="relative bg-black rounded-lg mb-6 aspect-video overflow-hidden border border-[#bfbfbf]">
         {video.embedUrl ? (
