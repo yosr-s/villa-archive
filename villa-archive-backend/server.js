@@ -15,28 +15,28 @@ const app = express();
 app.use(express.json());
 //app.use(cors());
 // Express example
-// app.use(cors({
-//   origin: ['https://archiwumdomu.pl', 'https://www.archiwumdomu.pl' , 'http://localhost:8080'],
-//   credentials: true
-// }));
-const allowedOrigins = [
-  "http://localhost:8080", // ✅ ton front local
-  "https://archiwumdomu.pl",
-  "https://www.archiwumdomu.pl",
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    // autoriser aussi Postman / appels internes sans origin
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn("❌ Requête refusée par CORS:", origin);
-      callback(new Error("CORS non autorisé"));
-    }
-  },
-  credentials: true,
+  origin: ['https://archiwumdomu.pl', 'https://www.archiwumdomu.pl' , 'http://localhost:8080'],
+  credentials: true
 }));
+// const allowedOrigins = [
+//   "http://localhost:8080", // ✅ ton front local
+//   "https://archiwumdomu.pl",
+//   "https://www.archiwumdomu.pl",
+// ];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     // autoriser aussi Postman / appels internes sans origin
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.warn("❌ Requête refusée par CORS:", origin);
+//       callback(new Error("CORS non autorisé"));
+//     }
+//   },
+//   credentials: true,
+// }));
 
 
 // 🔗 Connexion MongoDB
