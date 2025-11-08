@@ -58,8 +58,8 @@ const AdminDashboard = () => {
     { name: 'Dodaj wideo', href: '/admin/dashboard/add-video', icon: Upload },
     { name: 'Lista wideo', href: '/admin/dashboard/video-list', icon: List },
     { name: 'Przeglądaj archiwum', href: '/admin/dashboard/explore', icon: Clock },
-    { name: 'Dodaj zdjęcia', href: '/admin/dashboard/add-photos', icon: Image },
-    { name: 'Zdjęcia', href: '/admin/dashboard/photos', icon: Image },
+    // { name: 'Dodaj zdjęcia', href: '/admin/dashboard/add-photos', icon: Image },
+    // { name: 'Zdjęcia', href: '/admin/dashboard/photos', icon: Image },
     
   ];
 
