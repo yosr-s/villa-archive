@@ -72,15 +72,33 @@ export const imageService = {
    * 4️⃣ Récupérer les images par album
    * @param album nom de l’album
    */
-  async getImagesByAlbum(album: string) {
-    try {
-      const res = await api.get(`${API_BASE_URL}/images/album/${album}`);
-      return res.data;
-    } catch (error: any) {
-      console.error("❌ Erreur récupération par album :", error.response?.data || error.message);
-      throw error.response?.data || { message: "Erreur récupération images par album" };
+//   async getImagesByAlbum(album: string) {
+//     try {
+//       const res = await api.get(`${API_BASE_URL}/images/album/${album}`);
+//       return res.data;
+//     } catch (error: any) {
+//       console.error("❌ Erreur récupération par album :", error.response?.data || error.message);
+//       throw error.response?.data || { message: "Erreur récupération images par album" };
+//     }
+//   },
+async getImagesByAlbum(album: string) {
+  try {
+    const res = await api.get(`${API_BASE_URL}/images/album/${album}`);
+    // ✅ Toujours renvoyer un tableau
+    return Array.isArray(res.data) ? res.data : [];
+  } catch (error: any) {
+    console.error("❌ Erreur récupération par album :", error.response?.data || error.message);
+
+    // ✅ Si c’est une erreur 404 (album vide), on retourne un tableau vide au lieu de lancer une exception
+    if (error.response?.status === 404) {
+      return [];
     }
-  },
+
+    // ❌ Autres erreurs : on relance
+    throw error.response?.data || { message: "Erreur récupération images par album" };
+  }
+}
+,
 
   /**
    * 5️⃣ Supprimer une image par ID

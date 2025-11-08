@@ -25,27 +25,31 @@ const PhotoList: React.FC = () => {
   ];
 
   // 🔁 charger les images de l’album
-  useEffect(() => {
-    const fetchImages = async () => {
-      if (!album) return;
-      try {
-        setLoading(true);
-        const res = await imageService.getImagesByAlbum(album);
-        setImages(res);
-        setPage(1);
-      } catch (error: any) {
-        console.error("❌ Błąd ładowania zdjęć:", error.message);
-        toast({
-          title: "⚠️ Błąd",
-          description: "Nie udało się pobrać zdjęć z tego albumu.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchImages();
-  }, [album]);
+useEffect(() => {
+  const fetchImages = async () => {
+    if (!album) return;
+    try {
+      setLoading(true);
+      setImages([]); // 🧹 reset avant de charger
+      const res = await imageService.getImagesByAlbum(album);
+      setImages(Array.isArray(res) ? res : []); // 🧠 sécurité
+      setPage(1);
+    } catch (error: any) {
+      console.error("❌ Błąd ładowania zdjęć:", error.message);
+      toast({
+        title: "⚠️ Błąd",
+        description: "Nie udało się pobrać zdjęć z tego albumu.",
+        variant: "destructive",
+      });
+      setImages([]); // 🔒 en cas d’erreur, vider quand même
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchImages();
+}, [album]);
+
 
   // pagination
   const totalPages = Math.ceil(images.length / ITEMS_PER_PAGE);
