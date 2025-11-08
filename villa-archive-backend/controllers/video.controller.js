@@ -240,6 +240,7 @@ exports.registerVideo = async (req, res) => {
 //     res.status(500).json({ message: "Erreur récupération vidéos" });
 //   }
 // };
+
 exports.getVideos = async (req, res) => {
   try {
     const videos = await Video.find();
