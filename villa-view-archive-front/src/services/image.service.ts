@@ -97,8 +97,7 @@ async getImagesByAlbum(album: string) {
     // ❌ Autres erreurs : on relance
     throw error.response?.data || { message: "Erreur récupération images par album" };
   }
-}
-,
+},
 
   /**
    * 5️⃣ Supprimer une image par ID
