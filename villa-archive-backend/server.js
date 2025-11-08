@@ -19,6 +19,7 @@ app.use(cors({
   origin: ['https://archiwumdomu.pl', 'https://www.archiwumdomu.pl' , 'http://localhost:8080'],
   credentials: true
 }));
+
 // const allowedOrigins = [
 //   "http://localhost:8080", // ✅ ton front local
 //   "https://archiwumdomu.pl",
